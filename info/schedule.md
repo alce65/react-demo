@@ -29,6 +29,8 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
 
 ## Día 2 (L 12/05)
 
+- Instalación de Vitest y Testing Library
+  - Prueba con un test
 - Componentes funcionales y tipos (continuación)
   - Props y children
 - - PropTypes vs TypeScript

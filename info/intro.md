@@ -13,17 +13,17 @@ module: 0
     - [Instalación de dependencias](#instalación-de-dependencias)
   - [Elementos adicionales](#elementos-adicionales)
     - [Herramientas de testing](#herramientas-de-testing)
+      - [Mejorar el uso de los matchers extra de @testing-library/jest-dom](#mejorar-el-uso-de-los-matchers-extra-de-testing-libraryjest-dom)
     - [Herramientas de edición de código](#herramientas-de-edición-de-código)
-- [Componentes](#componentes)
-  - [JSX](#jsx)
-  - [CSS](#css)
+    - [EditorConfig](#editorconfig)
+    - [Prettier](#prettier)
 
 ## DESCRIPCIÓN
 
 Alejandro Cerezo Lasne
 <alce65@hotmail.es>
 
-DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
+DURACIÓN 40 horas
 
 ### OBJETIVOS
 
@@ -116,7 +116,7 @@ Según ellos mismos <https://vite.dev/>
 Para crear un nuevo proyecto con Vite, se puede utilizar el siguiente comando:
 
 ```shell
-$ npmreact-demo create vite@latest
+$ npm create vite@latest
 ```
 
 Esto iniciará un asistente que te guiará a través de la creación del proyecto. Puedes elegir entre diferentes plantillas, como React, Vue, Svelte, etc.
@@ -173,38 +173,99 @@ La más habitual de todas ellas es alguna herramienta de testing, como Vitest, q
 
 ```shell
 npm i -D vitest
+npm i -D @vitest/coverage-c8
+npm i -D jsdom
+npm i -D @testing-library/react @testing-library/jest-dom @testing-library/user-event
 ```
 
-También es necesario ajustar la configuración de ESLint para que funcione con Vitest. Puedes hacerlo agregando el siguiente plugin a tu archivo de configuración de ESLint:
-
-```js
-{
-  "plugins": ["vitest"]
-}
-```
-
-Finalmente puede se interesante agregar un script para ejecutar las pruebas en tu archivo `package.json`:
+Update `tsconfig.app.json` y `tsconfig.node.json` to add `vitest` to the `types` array:
 
 ```json
-"scripts": {
-  "test": "vitest"
+{
+  "compilerOptions": {
+    "types": ["vitest/globals"]
+  }
 }
+```
+
+Update `vite.config.ts` to add the `vitest` property:
+
+```ts
+import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: "jsdom",
+    include: ["**/*.test.ts", "**/*.test.tsx"],
+    globals: true,
+    coverage: {
+      include: ["src/**/*.ts"],
+      exclude: ["src/index.ts", "src/**/types/*.ts"],
+    },
+  },
+});
+```
+
+Update `package.json` to add the `test` script:
+
+```json
+{
+  "scripts": {
+    "test": "vitest"
+  }
+}
+```
+
+##### Mejorar el uso de los matchers extra de @testing-library/jest-dom
+
+`testConfig.ts` to src folder:
+
+```ts
+import "@testing-library/jest-dom/vitest";
+```
+
+Update `vitest.config.ts` to add the `setupFiles` property:
+
+```ts
+setupFiles: ["./testConfig.ts"];
 ```
 
 #### Herramientas de edición de código
 
-## Componentes
+#### EditorConfig
 
-Los componentes son la base de React. Un componente es una función o clase que devuelve un fragmento de código HTML. Los componentes pueden ser de clase o funcionales.
+EditorConfig es una herramienta que ayuda a mantener estilos de codificación consistentes entre diferentes editores e IDEs. Puedes instalar el plugin de EditorConfig en tu editor de código preferido.
+El archivo `.editorconfig` se utiliza para definir las reglas de estilo de codificación. Aquí tienes un ejemplo de un archivo `.editorconfig`:
 
-- Los componentes funcionales son funciones de JavaScript que devuelven JSX. Son la forma habitual de crear componentes en proyectos de React de los últimos años.
-- Los componentes de clase son clases de JavaScript que extienden la clase `React.Component` y tienen un método `render()` que devuelve JSX.
+```ini
+root = true
 
-### JSX
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+charset = utf-8
+```
 
-**JSX** es una extensión de sintaxis para JavaScript que permite escribir HTML dentro de JavaScript. JSX se compila a JavaScript puro antes de ser ejecutado en el navegador.
+#### Prettier
 
-- JSX permite escribir HTML de manera más legible y fácil de entender.
-- JSX se utiliza para describir cómo debería lucir la interfaz de usuario.
+Prettier es una herramienta de formateo de código que ayuda a mantener un estilo de codificación consistente. Puedes instalar el plugin de Prettier en tu editor de código preferido.
 
-### CSS
+Para definir las reglas de formateo de código se puede usar el archivo `.prettierrc` o añadir las reglas directamente al archivo `package.json`. Un ejemplo de estas reglas es el siguiente:
+
+```json
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "semi": true,
+  "printWidth": 80
+}
+```
+
+Cuando no están explícitamente definidas, Prettier utiliza las reglas de .editorconfig, si existe.
