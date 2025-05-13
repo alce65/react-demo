@@ -16,7 +16,9 @@ module: 1
     - [Alias de tipos (type aliases)](#alias-de-tipos-type-aliases)
     - [Interfaces](#interfaces)
       - [Interfaces y clases](#interfaces-y-clases)
-    - [Tipos v. interfaces 🎯🎯🎯🎯🎯🎯🎯🎯🎯](#tipos-v-interfaces-)
+    - [Tipos v. interfaces](#tipos-v-interfaces)
+      - [Extensión de interfaces y combinación de tipos](#extensión-de-interfaces-y-combinación-de-tipos)
+      - [Uso de tipos o interfaces](#uso-de-tipos-o-interfaces)
   - [Tipado de los datos](#tipado-de-los-datos)
     - [DTO (Data Transfer Object) y utilidades de tipos](#dto-data-transfer-object-y-utilidades-de-tipos)
   - [🌐 Tipado de los componentes](#-tipado-de-los-componentes)
@@ -26,7 +28,8 @@ module: 1
       - [🧿 Componente Counter](#-componente-counter)
     - [📘 Literales y tipos de unión aplicados en componentes React](#-literales-y-tipos-de-unión-aplicados-en-componentes-react)
       - [🧿 Componente Button](#-componente-button)
-  - [🌐 SOLID: Principio de Responsabilidad Única (SRP) 🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯](#-solid-principio-de-responsabilidad-única-srp-)
+      - [La prop `children`](#la-prop-children)
+  - [🌐 SOLID: Principio de Responsabilidad Única (SRP)](#-solid-principio-de-responsabilidad-única-srp)
   - [🌐 Tipado de eventos del DOM](#-tipado-de-eventos-del-dom)
     - [El objeto evento en React](#el-objeto-evento-en-react)
     - [Interfaces de eventos específicos](#interfaces-de-eventos-específicos)
@@ -41,8 +44,7 @@ module: 1
       - [🧿 Componente ProfileCard](#-componente-profilecard)
     - [Tipos de intersección aplicados en componentes React](#tipos-de-intersección-aplicados-en-componentes-react)
       - [🧿 Componente Box](#-componente-box)
-      - [Extensión de interfaces 🎯🎯🎯🎯🎯🎯🎯](#extensión-de-interfaces-)
-      - [SOLID: Principio de Segregación de Interfaces (ISP) 🎯🎯🎯🎯🎯🎯🎯](#solid-principio-de-segregación-de-interfaces-isp-)
+      - [SOLID: Principio de Segregación de Interfaces (ISP)](#solid-principio-de-segregación-de-interfaces-isp)
   - [📝 Ejercicios sugeridos](#-ejercicios-sugeridos)
 
 ## 🧩 MÓDULO 1: Tipos (Avanzados) en TypeScript para React
@@ -52,7 +54,7 @@ module: 1
 - Comprender el concepto de inferencia v. anotación de tipos
 - Usar tipos inferidos y explícitos para funciones en componentes React.
 - Comprender y aplicar los tipos de unión, intersección y literales en el contexto de React.
-- Tipar adecuadamente las props y el estado (state) en componentes funcionales.
+- Asignar el tipo adecuadamente las props y el estado (state) en componentes funcionales.
 - Manejar el tipado correcto de eventos del DOM y formularios en React
 
 ### 🧠 Inferencia y anotación de tipos
@@ -63,14 +65,14 @@ Los resultados inmediatos del uso de TypeScript son la **inferencia de tipos** y
 
 Respecto a lo primero, TypeScript puede **inferir el tipo** de una **variable** basándose en el valor asignado.
 
-```typescript
+```ts
 let x = 10; // x: number
 ```
 
 Sin necesidad de especificar el tipo de la variable `x`, TypeScript es capaz de inferir que `x` es de tipo `number`.
 Además, en el propio editor de código, TypeScript mostrará un error si se intenta asignar un valor de tipo distinto al inferido.
 
-```typescript
+```ts
 let x = 10;
 x = "Hola"; // Error: Type 'string' is not assignable to type 'number'
 ```
@@ -87,10 +89,10 @@ let user = {
 // user: { name: string; age: number }
 ```
 
-Es importante aaprovechar la inferencia de tipos y no usar anotaciones innecesarias. Aunque depende del conjunto de reglas activo, es habitual que el linter nos alerte en caso de usar anotaciones innecesarias.
+Es importante aprovechar la inferencia de tipos y no usar anotaciones innecesarias. Aunque depende del conjunto de reglas activo, es habitual que el linter nos alerte en caso de usar anotaciones innecesarias.
 
 ```ts
-let state: boolean = false
+let state: boolean = false;
 
 // Type boolean trivially inferred from a boolean literal, remove type annotation.
 // eslint@typescript-eslint/no-inferrable-types
@@ -101,14 +103,14 @@ let state: boolean = false
 
 Hay que considerar la diferencia entre las declaraciones `let` y `const`, dando esta segunda lugar a los **tipos literales** (literal types). Esto se debe a que TypeScript trata de hacer siempre la inferencia lo más específica posible.
 
-```typescript
+```ts
 let x = 10; // x: number
 const y = 20; // y: 20
 ```
 
 En caso de `let` es posible forzar un tipo literal una conversión de tipo (type casting), de las que luego hablaremos. Por ejemplo, si se quiere que `x` sea un número 10, se puede hacer lo siguiente:
 
-```typescript
+```ts
 let x = 10 as const; // x: 10
 ```
 
@@ -126,7 +128,7 @@ x = "Hola"; // x: any
 
 En caso de un any implícitos, entre otros, es conveniente usar **anotaciones de tipos** (type annotations), para proporcionar (anotar) tipos **explícitos** a las variables.
 
-```typescript
+```ts
 let x;
 x = 10; // x: any;
 let y: number; // anotación de tipo
@@ -211,7 +213,7 @@ Existen dos mecanismos en TypeScript para dar nombre a nuevos tipos, denominados
 
 Los alias de tipos permiten dar nombre a un tipo y reutilizarlo en diferentes partes del código. Se definen con el operador `type` y se pueden utilizar para definir con un nombre cualquiera de los tipos que existen en TypeScript, como los tipos de objetos, tipos de tuplas, tipos de unión y tipos de intersección que ya conocemos.
 
-```typescript
+```ts
 type User = { name: string; age: number };
 type Tuple: readonly [string, number];
 type Success = { status: 'success'; data: string[] };
@@ -221,7 +223,7 @@ type Response = Success | Fail;
 
 Igualmente se pueden usar alias de tipos para definir tipos de funciones, que se pueden reutilizar en diferentes partes del código.
 
-```typescript
+```ts
 type Callback = (a: number, b: number) => number;
 const add: Callback = (a, b) => a + b;
 const multiply: Callback = (a, b) => a * b;
@@ -231,7 +233,7 @@ Al dar nombres a tipos, se pueden **simplificar definiciones** de tipos complejo
 
 A diferencia de lo que ocurre con las interfaces, también se pueden usar alias de tipos para renombrar tipos **primitivos** y tipos **literales** o conjunto de cualquiera de ellos, creados mediante uniones o intersecciones.
 
-```typescript
+```ts
 type Name = string;
 type Age = number;
 type ID = string | number;
@@ -246,7 +248,7 @@ En estos casos destaca especialmente el valor semántico de los alias de tipos, 
 
 Las interfaces son otra forma de dar un nombre a un tipo, pero no a cualquier tipo de TypeScript, no pudiendo usarse con tipos primitivos o sus literales. Se definen con la palabra clave `interface` y se pueden utilizar para definir tipos de objetos, tipos de funciones y tipos de clases.
 
-```typescript
+```ts
 export type User = {
   name: string;
   age: number;
@@ -260,7 +262,7 @@ export interface User {
 
 Igual que en los objetos, en los tipos u en los interfaces se pueden incluir **propiedades opcionales** y **propiedades de solo lectura**.
 
-```typescript
+```ts
 export interface User {
   name: string;
   age: number;
@@ -273,7 +275,7 @@ export interface User {
 
 Las clases en TypeScript son en si mismas una interfaz, por lo que pueden ser utilizadas para definir el tipo de cualquier variable.
 
-```typescript
+```ts
 export class User {
   name: string;
   age: number;
@@ -288,7 +290,81 @@ const user: User = { name: "Pepe", age: 30 };
 
 Más adelante se verá el uso de las clases en TypeScript, pero por el momento es importante tener en cuenta que las interfaces y las clases son dos formas diferentes de definir tipos en TypeScript.
 
-#### Tipos v. interfaces 🎯🎯🎯🎯🎯🎯🎯🎯🎯
+#### Tipos v. interfaces
+
+En términos generales los tipos y los interfaces son intercambiables e incluso pueden utilizarse juntos a la hora de crear nuevos tipos. Sin embargo, existen algunas diferencias entre ellos:
+
+- **Valores primitivos y literales**: los tipos pueden ser utilizados para definir cualquier tipo de TypeScript, incluyendo tipos primitivos y literales, mientras que las interfaces solo pueden ser utilizadas para definir tipos de objetos.
+
+```ts
+type Name = string;
+type Age = number;
+type ID = string | number;
+type Status = "success" | "error";
+```
+
+- **Fusión de declaraciones (declaration merging)**: las interfaces pueden volver a ser declarados lo que significa que se pueden extender mediante esta técnica para crear interfaces más complejos. Por el contrario, los tipos no pueden extenderse volviendo a ser declarados.
+
+```ts
+interface User {
+  name: string;
+}
+
+interface User {
+  age: number;
+}
+// User: { name: string; age: number }
+```
+
+##### Extensión de interfaces y combinación de tipos
+
+En ambos casos existen mecanismos de **extensión**, equivalentes pero diferentes:
+
+En los interfaces se pueden extender otras interfaces, utilizando la palabra clave `extends`, y se pueden combinar con otras interfaces utilizando el operador `|` (unión).
+
+```ts
+interface User {
+  name: string;
+}
+
+interface Admin extends User {
+  role: string;
+}
+```
+
+En el caso de los tipos se pueden combinar con otros tipos utilizando el operador `&` (intersección).
+
+```ts
+type User = {
+  name: string;
+};
+
+type Admin = User & {
+  role: string;
+};
+```
+
+En cualquiera de los casos, se puede usar el operador `|` (unión) para combinar tipos o interfaces
+
+```ts
+type User = {
+  name: string;
+};
+
+interface Admin {
+  role: string;
+}
+
+type UserOrAdmin = User | Admin;
+```
+
+##### Uso de tipos o interfaces
+
+La documentación oficial de [TypeScript](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#differences-between-type-aliases-and-interfaces) indica:
+
+> El uso de interfaces con extends a menudo puede ser más eficiente para el compilador que el uso de alias de tipo con intersecciones.
+> En general, puede elegir según sus preferencias personales, y TypeScript le indicará si necesita que algo sea el otro tipo de declaración.
+> Si desea una heurística, use interface hasta que necesite usar características de type.
 
 En la configuración por defecto del Linter de TypeScript, existe una regla que obliga a usar interfaces en lugar de tipos para definir tipos de objetos (Use an `interface` instead of a `type`): `eslint@typescript-eslint/consistent-type-definitions`.
 
@@ -300,7 +376,6 @@ Si preferimos usar tipos en lugar de interfaces, podemos desactivar esta regla e
     "@typescript-eslint/consistent-type-definitions": "off"
   }
 }
-
 ```
 
 ### Tipado de los datos
@@ -319,7 +394,7 @@ type User = {
   email: string;
   age: number;
 };
-````
+```
 
 A partir de un tipo de datos, se pueden definir otros tipos de datos más complejos, como por ejemplo un tipo de datos que represente una lista de usuarios.
 
@@ -331,7 +406,7 @@ type UserList = {
 
 #### DTO (Data Transfer Object) y utilidades de tipos
 
-Igualmente es posible definir tipos derivados de los ya existentes. Por ejemplo, en el caso de las entidades, es posible definir un tipo de datos que represente su **DTO** (Data Transfer Object), es decir el conjunto de datos que se transfieren al backend para que este pueda crar la entidaad completa.
+Igualmente es posible definir tipos derivados de los ya existentes. Por ejemplo, en el caso de las entidades, es posible definir un tipo de datos que represente su **DTO** (Data Transfer Object), es decir el conjunto de datos que se transfieren al backend para que este pueda crear la entidad completa.
 
 ```ts
 type UserDTO = Omit<User, "id">;
@@ -427,7 +502,7 @@ export const Counter: React.FC<Props> = ({ initialCount }) => {
 
 Esta forma de tipar las props podía der algunos problemas en React 17, pero parece que ha sido solucionado en versiones posteriores.
 
-En lugar de usar el tipo `React.FC`, y en su genérico tipar las props (React.FC<Props>), es frecuente usar como componentes funciones tipadas directamente, es decir definir el tipo de los parámetros, dejando implícito el tipo del valor de retorno, que typescrip lo inferirá como `JSX.Element` o `ReactNode`, que son los tipos de los elementos de React.
+En lugar de usar el tipo `React.FC`, y en su genérico tipar las props (React.FC\<Props>), es frecuente usar como componentes funciones tipadas directamente, es decir definir el tipo de los parámetros, dejando implícito el tipo del valor de retorno, que typescript lo inferirá como `JSX.Element` o `ReactNode`, que son los tipos de los elementos de React.
 
 ```tsx
 type Props = {
@@ -525,6 +600,8 @@ En el ejemplo anterior, el componente `Button` acepta props `variant` y `size` q
 
 Además el componente `Button` también acepta una prop `onClick` que es una función que no recibe parámetros y no devuelve nada. Esto se puede definir como un tipo de función, como hemos visto anteriormente.
 
+##### La prop `children`
+
 Finalmente, el componente `Button` también acepta una prop `children`, que es el contenido que se mostrará dentro del botón. Esta prop especial se suele definir como un tipo `React.ReactNode`, que representa cualquier elemento de HTML, incluyendo los componentes de React. En algunos casos interesa añadirle algún tipo más específico, como `string` o `number`, si se quiere restringir el tipo de los hijos del componente.
 
 ```tsx
@@ -544,7 +621,7 @@ El componente `Button` se puede usar de la siguiente manera:
 </Button>
 ```
 
-### 🌐 SOLID: Principio de Responsabilidad Única (SRP) 🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
+### 🌐 SOLID: Principio de Responsabilidad Única (SRP)
 
 El principio de responsabilidad única (SRP) es uno de los principios SOLID, que establece que un componente debe tener una única responsabilidad o función. Esto significa que un componente debe ser responsable de una sola tarea y no debe hacer más de una cosa.
 
@@ -553,11 +630,25 @@ La división del UI en componente es en si misma una aplicación de este princip
 - cada componente tenga una única responsabilidad, es decir, que se encargue de una sola tarea o función dentro del UI en el que participa
 - cada componente tenga solo la lógica imprescindible en relación con la parte del UI de la que se ocupa.
 
-La **composición de componentes** es una forma de aplicar el principio de responsabilidad única, ya que permite dividir el UI en componentes más pequeños y reutilizables.
+Para extender el principio de responsabilidad única, es importante tener en cuenta lo siguiente:
+
+- **Separar la lógica de negocio de la lógica de presentación**: la lógica de negocio debe estar separada de la lógica de presentación, es decir, la lógica que se encarga de mostrar los datos en el UI. Esto permite que los componentes sean más fáciles de entender y mantener.
+
+- **Usar componentes funcionales**: los componentes funcionales son más fáciles de entender y mantener que los componentes de clase, ya que son más simples y no tienen estado interno. Además, los componentes funcionales son más fáciles de probar y reutilizar.
+- **Usar tipos o interfaces**: los tipos son una forma de definir la estructura de los datos y las funciones. Esto permite que los componentes sean más fáciles de entender y mantener, ya que la lógica de negocio se puede separar en diferentes tipos.
+- **Usar props**: las props son una forma de pasar datos y funciones a los componentes. Esto permite que los componentes sean más fáciles de entender y mantener, ya que la lógica de negocio se puede separar en diferentes componentes.
+- **Usar context**: el contexto es una forma de pasar datos y funciones a los componentes sin tener que pasarlos como props. Esto permite que los componentes sean más fáciles de entender y mantener, ya que la lógica de negocio se puede separar en diferentes contextos.
+- **Usar hooks**: los hooks son una forma de reutilizar la lógica de estado y efectos secundarios en los componentes funcionales. Esto permite que los componentes sean más fáciles de entender y mantener, ya que la lógica de estado y efectos secundarios se puede separar en diferentes hooks.
+
+Una forma de aplicar el principio de responsabilidad única es permite dividir el UI en componentes más pequeños y reutilizables. Para aplicar esta técnica en React, se pueden usar los siguientes patrones:
+
+- **Composición de componentes**: consiste en crear componentes más pequeños y reutilizables que se pueden combinar para crear componentes más grandes y complejos. Esto permite que los componentes sean más fáciles de entender y mantener, ya que la lógica de negocio se puede separar en diferentes componentes. Esta técnica depende en gran medida de la propiedad `children`, que permite pasar un elemento o un conjunto de elementos como prop a un componente.
+- **Render props**: consiste en pasar una función como prop a un componente, que se encargará de renderizar el UI. Esto permite que los componentes sean más fáciles de entender y mantener, ya que la lógica de negocio se puede separar en diferentes componentes.
+- **Higher-order components (HOC)**: consiste en crear un componente que recibe otro componente como prop y lo envuelve en un nuevo componente. Esto permite que los componentes sean más fáciles de entender y mantener, ya que la lógica de negocio se puede separar en diferentes componentes.
 
 ### 🌐 Tipado de eventos del DOM
 
-Cuando se registra un callback como manejador (handle) de un evento del DOM, como `onClick`, `onChange`, etc., en el momento que se ejecute la función recibirá como parámetro un objeto de evento (event object) que contiene información sobre el evento que se ha producido.
+Cuando se registra un callback como manejador (handler) de un evento del DOM, como `onClick`, `onChange`, etc., en el momento que se ejecute la función recibirá como parámetro un objeto de evento (event object) que contiene información sobre el evento que se ha producido.
 
 #### El objeto evento en React
 
@@ -668,7 +759,7 @@ interface DOMStringMap {
 
 Esto significa que el dataset puede contener cualquier número de propiedades, y cada propiedad es de tipo `string`. Esto es útil para acceder a propiedades personalizadas que se han añadido al elemento, siempre de tipo `string`, porque es el único tipo que se puede almacenar en cualquier atributo HTML.
 
-El resultado final del componete Counter es el siguiente:
+El resultado final del componente Counter es el siguiente:
 
 ```tsx
 export const CounterWithEvent3: React.FC<Props> = ({ initialCount }) => {
@@ -805,7 +896,7 @@ export const FormComponent = () => {
 };
 ```
 
-Si el formulario incluye un campo de tipo `checkbox`, radiobuton o `select`, el evento `ChangeEvent` se tipará de forma más extensa, utilizando una unión de tipos, que incluye el tipo `HTMLInputElement` o `HTMLSelectElement`, dependiendo del tipo de elemento al que se aplica el evento. Ademas es código del handler tiene que contemplar el comportamiento de los checkbox, accediendo a pa propiedad checked en lugar de al value.
+Si el formulario incluye un campo de tipo `checkbox`, `radiobutton` o `select`, el evento `ChangeEvent` se tipará de forma más extensa, utilizando una unión de tipos, que incluye el tipo `HTMLInputElement` o `HTMLSelectElement`, dependiendo del tipo de elemento al que se aplica el evento. Ademas es código del handler tiene que contemplar el comportamiento de los checkbox, accediendo a pa propiedad checked en lugar de al value.
 
 ```tsx
 const handleChange = (
@@ -881,7 +972,7 @@ const ProfileCard: React.FC<ProfileProps> = ({ profile }) => {
 };
 ```
 
-Al recibir la prop del tipo union, solo las propiedades comunes serían accesibkles, como `name`, y el resto de propiedades específicas de cada tipo solo serían accesibles si se hace una **guarda de tipos**. Al haber definido un propiedad que diferencia cada uno de los tipos que participan en la unión (`profile.type`) la guarda en base a esa propiedad da lugar a una técnica conocida como **uniones discriminadas**, donde un tipo literal de un elemento compartido por varios tipos participantes en una unión se usa como discriminador para determinar el tipo de otros elementos.
+Al recibir la prop del tipo union, solo las propiedades comunes serían accesibles, como `name`, y el resto de propiedades específicas de cada tipo solo serían accesibles si se hace una **guarda de tipos**. Al haber definido un propiedad que diferencia cada uno de los tipos que participan en la unión (`profile.type`) la guarda en base a esa propiedad da lugar a una técnica conocida como **uniones discriminadas**, donde un tipo literal de un elemento compartido por varios tipos participantes en una unión se usa como discriminador para determinar el tipo de otros elementos.
 
 Combinando esto con el **renderizado condicional** re React, se pueden mostrar diferentes elementos en función del tipo de perfil que se recibe como prop.
 
@@ -926,9 +1017,28 @@ const Box: React.FC<ComponentProps> = ({
 
 Aquí ComponentProps hereda todas las propiedades de BaseProps y StyleProps. Esto es más limpio que redefinirlas todas a mano y mejora la reutilización de tipos.
 
-##### Extensión de interfaces 🎯🎯🎯🎯🎯🎯🎯
+Como ya hemos visto, un alternativa sería la extensión de interfaces, que permite crear un nuevo tipo a partir de otro, heredando todas las propiedades del tipo base.
 
-##### SOLID: Principio de Segregación de Interfaces (ISP) 🎯🎯🎯🎯🎯🎯🎯
+```tsx
+interface BaseProps {
+  id: string;
+  visible: boolean;
+  children: React.ReactNode;
+}
+interface StyleProps {
+  className?: string;
+  style?: React.CSSProperties;
+}
+interface ComponentProps extends BaseProps, StyleProps {}
+```
+
+##### SOLID: Principio de Segregación de Interfaces (ISP)
+
+El principio de segregación de interfaces (ISP) es uno de los principios SOLID, que establece que una interfaz no debe obligar a un cliente a depender de métodos que no utiliza. Esto significa que una interfaz debe ser específica y contener solo los métodos que son relevantes para el cliente.
+
+La posibilidad de combinar tipos con el operador de intersección o interfaces con el operador `extends` permite crear tipos más específicos y reutilizables, que pueden ser utilizados en diferentes partes del código. Esto permite que los componentes sean más fáciles de entender y mantener, ya que la lógica de negocio se puede separar en diferentes tipos.
+
+Como veremos, otra posibilidad es utilizar varios interfaces para que sean implementados por una misma clase, y así poder mantener cada uno de ellos lo más específico posible.
 
 ### 📝 Ejercicios sugeridos
 
@@ -936,25 +1046,25 @@ Aquí ComponentProps hereda todas las propiedades de BaseProps y StyleProps. Est
    Crea un componente <Badge status="success" | "error" | "warning"> que reciba una prop status y renderice un color distinto según su valor.
 
 2. ✅ Input tipado y controlado
-   Crea un componente <TextInput> que reciba una prop label opcional y una función onChange, con tipado correcto de los eventos de formulario.
+   Crea un componente \<TextInput> que reciba una prop label opcional y una función onChange, con tipado correcto de los eventos de formulario.
 
 3. ✅ Contador con estado tipado
-   Implementa un contador con useState<number>(), botones para incrementar/decrementar, y una prop initialCount.
+   Implementa un contador con useState\<number>(), botones para incrementar/decrementar, y una prop initialCount.
 
 4. ✅ Formulario controlado con múltiples campos
    Crea un formulario con dos o más inputs (nombre, email, etc.) y un botón que imprima los datos ingresados. Tipa correctamente el estado y los eventos.
 
 5. ✅ Alias de tipos y componentes reutilizables
-   Define un alias de tipo User con propiedades id, name, y email, y úsalo en un componente <UserCard user={user} />.
+   Define un alias de tipo User con propiedades id, name, y email, y úsalo en un componente \<UserCard user={user} />.
 
 6. ✅ Uso de interfaces con props y funciones
    Define una interface Product con propiedades y métodos (por ejemplo, getPriceConIVA()), y úsala en un componente que muestre el producto y su precio final.
 
 7. ✅ Componentes con props de tipo unión
-   Diseña un componente <Message /> que acepte dos formas distintas de props: una para un mensaje de texto, otra para uno con título y cuerpo. Usa type narrowing.
+   Diseña un componente \<Message /> que acepte dos formas distintas de props: una para un mensaje de texto, otra para uno con título y cuerpo. Usa type narrowing.
 
 8. ✅ Componentes con intersección de tipos
-   Crea un componente <ProfileAvatar /> que combine tipos: por ejemplo, uno con datos comunes (name, avatarUrl) y otro con permisos (canEdit, canDelete).
+   Crea un componente \<ProfileAvatar /> que combine tipos: por ejemplo, uno con datos comunes (name, avatarUrl) y otro con permisos (canEdit, canDelete).
 
 9. ✅ Evento de clic tipado y estado condicional
    Implementa un botón que cambia de color al hacer clic, usando onClick y estado booleano tipado.
