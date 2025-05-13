@@ -1,13 +1,9 @@
+import type { JSX } from "react";
+import "./App.css";
+import { Initial } from "./components/initial";
 
-import './App.css'
-import { Initial } from './components/initial'
+const App = (): JSX.Element => {
+  return <Initial />;
+};
 
-function App() {
-
-
-  return (
-   <Initial />
-  )
-}
-
-export default App
+export default App;

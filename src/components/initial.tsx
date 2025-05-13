@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, type JSX } from 'react'
 import reactLogo from '../assets/react.svg'
 import viteLogo from '/vite.svg'
 
-export const Initial = () => {
+export const Initial = (): JSX.Element => {
     const [count, setCount] = useState(0)
     return (<>
     <div>
