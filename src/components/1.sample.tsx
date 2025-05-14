@@ -1,4 +1,4 @@
-import type { JSX } from "react";
+import type { JSX } from 'react';
 
 // Tipado de las funciones
 // tanto el componente
@@ -8,8 +8,8 @@ export const SampleComponent = (): JSX.Element => {
   // const handleClick = (event: SyntheticEvent): void => {
   const handleClick = (event: React.MouseEvent): void => {
     event.preventDefault();
-    console.log("Button clicked!");
-    alert("Button clicked!");
+    console.log('Button clicked!');
+    alert('Button clicked!');
   };
 
   return (
