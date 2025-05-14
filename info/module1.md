@@ -74,7 +74,7 @@ Además, en el propio editor de código, TypeScript mostrará un error si se int
 
 ```ts
 let x = 10;
-x = "Hola"; // Error: Type 'string' is not assignable to type 'number'
+x = 'Hola'; // Error: Type 'string' is not assignable to type 'number'
 ```
 
 Para los valores primitivos, los tipos inferidos son los mismos siete tipos primitivos de JavaScript: `number`, `string`, `boolean`, `null`, `undefined`, `symbol` y `bigint`.
@@ -83,7 +83,7 @@ Para los objetos, TypeScript infiere el tipo de la variable a partir de la estru
 
 ```ts
 let user = {
-  name: "John",
+  name: 'John',
   age: 30,
 };
 // user: { name: string; age: number }
@@ -121,7 +121,7 @@ El tipo `any` **implícito** aparece cuando TypeScript no puede inferir el tipo 
 ```ts
 let x; // x: any
 x = 10; // x: any
-x = "Hola"; // x: any
+x = 'Hola'; // x: any
 ```
 
 #### Variables y tipos explícitos (type annotations)
@@ -142,7 +142,7 @@ Las anotaciones son especialmente importantes, en el caso de los **parámetros**
 Como hemos visto, TypeScript infiere tipos automáticamente, cuando las variables se declaran con un valor inicial. Esto solo se aplica a los parámetros de las funciones cuando tienen un valor por defecto.
 
 ```tsx
-const handleClick = (event = new MouseEvent("click")) => {
+const handleClick = (event = new MouseEvent('click')) => {
   console.log(event);
 };
 ```
@@ -169,7 +169,7 @@ El tipado del retorno de las funciones, aunque es opcional, pero mejora **la leg
 ```tsx
 // Inferido
 const handleClick = () => {
-  console.log("clicked");
+  console.log('clicked');
 };
 
 // Explícito
@@ -237,7 +237,7 @@ A diferencia de lo que ocurre con las interfaces, también se pueden usar alias 
 type Name = string;
 type Age = number;
 type ID = string | number;
-type Status = "success" | "error";
+type Status = 'success' | 'error';
 type Firsts = 1 | 2 | 3 | 4 | 5;
 type Events = 2 | 4 | 6 | 8;
 ```
@@ -285,7 +285,7 @@ export class User {
   }
 }
 
-const user: User = { name: "Pepe", age: 30 };
+const user: User = { name: 'Pepe', age: 30 };
 ```
 
 Más adelante se verá el uso de las clases en TypeScript, pero por el momento es importante tener en cuenta que las interfaces y las clases son dos formas diferentes de definir tipos en TypeScript.
@@ -300,7 +300,7 @@ En términos generales los tipos y los interfaces son intercambiables e incluso 
 type Name = string;
 type Age = number;
 type ID = string | number;
-type Status = "success" | "error";
+type Status = 'success' | 'error';
 ```
 
 - **Fusión de declaraciones (declaration merging)**: las interfaces pueden volver a ser declarados lo que significa que se pueden extender mediante esta técnica para crear interfaces más complejos. Por el contrario, los tipos no pueden extenderse volviendo a ser declarados.
@@ -409,7 +409,7 @@ type UserList = {
 Igualmente es posible definir tipos derivados de los ya existentes. Por ejemplo, en el caso de las entidades, es posible definir un tipo de datos que represente su **DTO** (Data Transfer Object), es decir el conjunto de datos que se transfieren al backend para que este pueda crear la entidad completa.
 
 ```ts
-type UserDTO = Omit<User, "id">;
+type UserDTO = Omit<User, 'id'>;
 ```
 
 En la creación del DTO usamos una utilidad de TypeScript, `Omit`, que permite crear un nuevo tipo a partir de otro, omitiendo una o varias propiedades. En este caso, omitimos la propiedad `id` del tipo `User`, ya que no es necesaria para crear el DTO.
@@ -441,7 +441,7 @@ export const HelloWorld = () => {
 Si se prefiere que el tipo del componente sea explícito, se puede usar el tipo `JSX.Element` para definir el tipo de retorno del componente.
 
 ```tsx
-import { JSX } from "react";
+import { JSX } from 'react';
 
 export const HelloWorld: () => JSX.Element = () => {
   return <h1>Hola Mundo</h1>;
@@ -548,6 +548,8 @@ export const Counter1: React.FC<Props> = ({ initialCount }) => {
 
 Los manejadores del evento `onClick`, como cualquier callback, se pueden definir de forma anónima o como funciones nombradas. Por lo general es una buena práctica esta segunda opción, ya que mejora la legibilidad del código y permite reutilizar el código en diferentes partes del componente.
 
+Esto no es posible si se necesita pasarle parámetros al manejador, ya que como callback, es ejecutado por el sistema y su único parámetro es el objeto evento. En ese caso se puede utilizar una función anónima que a su vez ejecute una llamada a la función nombrada, pasando los parámetros necesarios.
+
 ```tsx
 const handleIncrement = (value = 1) => {
   setCount(count + value);
@@ -555,7 +557,7 @@ const handleIncrement = (value = 1) => {
 
 return (
   ...
-    <button onClick={handleIncrement}>➕</button>
+    <button onClick={() => handleIncrement(1)}>➕</button>
     <button onClick={() => handleIncrement(-1)}>➖</button>
    ...
 );
@@ -572,8 +574,8 @@ Uno de sus usos mas comunes es combinarlos con el operador de unión `|` para cr
 Como en el siguiente ejemplo, donde se define un tipo `ButtonVariant` que puede ser "primary" o "secondary", y un tipo `Size` que puede ser "small", "medium" o "large".
 
 ```tsx
-type ButtonVariant = "primary" | "secondary";
-type Size = "small" | "medium" | "large";
+type ButtonVariant = 'primary' | 'secondary';
+type Size = 'small' | 'medium' | 'large';
 
 type ButtonProps = {
   variant: ButtonVariant;
@@ -807,7 +809,7 @@ De esa manera se puede crear lo que se conoce como un **formulario controlado** 
 
 ```tsx
 export const SimpleFormComponent = () => {
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<string>('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // .target: EventTarget & HTMLInputElement
@@ -816,7 +818,7 @@ export const SimpleFormComponent = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted with value:", value);
+    console.log('Form submitted with value:', value);
   };
 
   return (
@@ -842,7 +844,7 @@ Veamos un ejemplo de un formulario controlado con múltiples campos, donde
 - una función para manejar el envío del formulario.
 
 ```tsx
-import React, { useState } from "react";
+import React, { useState } from 'react';
 type FormData = {
   name: string;
   email: string;
@@ -854,8 +856,8 @@ type FormErrors = {
 
 export const FormComponent = () => {
   const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
+    name: '',
+    email: '',
   });
   const [formErrors, setFormErrors] = useState<FormErrors>({});
 
@@ -868,10 +870,10 @@ export const FormComponent = () => {
     e.preventDefault();
     // Validar el formulario
     if (!formData.name) {
-      setFormErrors({ ...formErrors, name: "El nombre es obligatorio" });
+      setFormErrors({ ...formErrors, name: 'El nombre es obligatorio' });
     } else {
       setFormErrors({});
-      console.log("Formulario enviado:", formData);
+      console.log('Formulario enviado:', formData);
     }
   };
 
@@ -900,7 +902,7 @@ Si el formulario incluye un campo de tipo `checkbox`, `radiobutton` o `select`, 
 
 ```tsx
 const handleChange = (
-  ev: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ev: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
 ) => {
   const formControl = ev.target;
   // desestructurar no podría acceder a .checked
@@ -909,7 +911,7 @@ const handleChange = (
   setUserData({
     ...userData,
     [formControl.name]:
-      formControl.type === "checkbox" ? formControl.checked : formControl.value,
+      formControl.type === 'checkbox' ? formControl.checked : formControl.value,
   });
 };
 ```
@@ -930,13 +932,13 @@ El mismo principio se puede aplicar a cualquier tipo más complejo, por ejemplo 
 ```tsx
 // Tipos para las distintas formas del perfil
 type AdminProfile = {
-  type: "admin";
+  type: 'admin';
   name: string;
   permissions: string[];
 };
 
 type UserProfile = {
-  type: "user";
+  type: 'user';
   name: string;
   email: string;
 };
@@ -955,7 +957,7 @@ const ProfileCard: React.FC<ProfileProps> = ({ profile }) => {
     <div className="card">
       <h2>{profile.name}</h2>
 
-      {profile.type === "admin" ? (
+      {profile.type === 'admin' ? (
         <div>
           <strong>Permisos:</strong>
           <ul>

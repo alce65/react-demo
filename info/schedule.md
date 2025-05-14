@@ -27,11 +27,23 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
 - Componentes funcionales y tipos
   - Props
 
-## Día 2 (L 12/05)
+## Día 2 (M 13/05)
 
 - Instalación de Vitest y Testing Library
   - Prueba con un test
 - Componentes funcionales y tipos (continuación)
-  - Props y children
+  - Props -> Counter
 - - PropTypes vs TypeScript
-  - Tipado de eventos
+  - State -> Counter
+  - Literales y tipos de unión -> Button
+  - La prop children -> Button
+    - Composición de componentes y Single Responsibility Principle
+  - Tipado de eventos del DOM -> CounterEvent
+    - Target y currentTarget
+    - Firmas de indice (Records)
+- Test del componente Counter
+  - Test de eventos: click
+
+## Día 3 (X 14/05)
+
+- Formularios
