@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { getData } from './7b';
 
-type User = {
+export type User = {
   userName: string;
   email: string;
   isOkConditions: boolean;
   turn: string;
   course: string;
+  ratio: number;
 };
 
 const initialUser: User = {
@@ -14,6 +15,7 @@ const initialUser: User = {
   isOkConditions: false,
   turn: 'M',
   course: 'A',
+  ratio: 0,
 };
 
 export const FormNC: React.FC = () => {
@@ -35,22 +37,21 @@ export const FormNC: React.FC = () => {
   //   console.log('User:', user);
   // };
 
-  // Gestión del formulario accediendo a los datos mediante 
+  // Gestión del formulario accediendo a los datos mediante
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
-    const formData = new FormData(form);
 
-    const data: Record<string, FormDataEntryValue | boolean> =
-      Object.fromEntries(formData);
+    // const data: Record<string, FormDataEntryValue | boolean> =
+    //   Object.fromEntries(formData);
 
-    for (const [key, value] of formData) {
-      if (typeof initialUser[key as keyof typeof initialUser] === 'boolean') {
-        data[key] = value === 'on';
-      }
-    }
-
-    console.log('User data:', data as User);
+    // for (const [key, value] of formData) {
+    //   if (typeof initialUser[key as keyof typeof initialUser] === 'boolean') {
+    //     data[key] = value === 'on';
+    //   }
+    // }
+    const data = getData(form, initialUser);
+    console.log('User data:', data);
   };
 
   return (

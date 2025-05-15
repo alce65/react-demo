@@ -50,9 +50,9 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
 - Formularios
   - Formularios controlados
   - Tipado de eventos Change y Submit
-  - Ejemplos
+  - Ejemplos. Checkbox
   - Formularios no controlados. FormData
 - Tipos unión e intersección
   - Tipos unión: uniones discriminadas
   - Intersección de tipos. Extensión de Interfaces
-  - SOL[I]D:Interface Segregation Principle
+  - SOL[I]D: Interface Segregation Principle
