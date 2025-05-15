@@ -36,9 +36,13 @@ module: 1
     - [Atributos `target` y `currentTarget`](#atributos-target-y-currenttarget)
     - [Casting de tipos](#casting-de-tipos)
     - [🧿 Componente Counter refactorizado](#-componente-counter-refactorizado)
-    - [📘 Tipado de eventos de formulario](#-tipado-de-eventos-de-formulario)
+  - [🌐 Formularios](#-formularios)
+    - [📘 Tipado de eventos de formularios controlados](#-tipado-de-eventos-de-formularios-controlados)
       - [🧿 Componente SimpleForm: formulario controlado](#-componente-simpleform-formulario-controlado)
       - [🧿 Componente Form: formulario controlado con multiples campos](#-componente-form-formulario-controlado-con-multiples-campos)
+    - [Formularios no controlados](#formularios-no-controlados)
+      - [🧿 Componente CourseRegistration](#-componente-courseregistration)
+      - [FormData](#formdata)
   - [📘 Tipos de unión, intersección aplicados en componentes React](#-tipos-de-unión-intersección-aplicados-en-componentes-react)
     - [Tipos de unión aplicados en componentes React](#tipos-de-unión-aplicados-en-componentes-react)
       - [🧿 Componente ProfileCard](#-componente-profilecard)
@@ -557,7 +561,7 @@ const handleIncrement = (value = 1) => {
 
 return (
   ...
-    <button onClick={() => handleIncrement(1)}>➕</button>
+    <button onClick={handleIncrement}>➕</button>
     <button onClick={() => handleIncrement(-1)}>➖</button>
    ...
 );
@@ -790,7 +794,9 @@ export const CounterWithEvent3: React.FC<Props> = ({ initialCount }) => {
 };
 ```
 
-#### 📘 Tipado de eventos de formulario
+### 🌐 Formularios
+
+#### 📘 Tipado de eventos de formularios controlados
 
 En el caso de los formularios, los eventos más habituales son React.ChangeEvent, React.FormEvent, etc.
 
@@ -913,6 +919,229 @@ const handleChange = (
     [formControl.name]:
       formControl.type === 'checkbox' ? formControl.checked : formControl.value,
   });
+};
+```
+
+#### Formularios no controlados
+
+Una alternativa a los formularios controlados son los formularios no controlados, donde el valor los campos (HTMLInput, HTMLSelect o HTMLTextArea) se almacena en el DOM y se accede a ellos solo en el momento de enviar el formulario, sin necesidad de almacenarlos en el estado interno del componente. Esto se puede hacer utilizando una referencia (ref) al elemento del DOM del propio formulario, que se puede obtener del evento submit.
+
+```tsx
+  const handleSubmit = (ev: React.FormEvent<HTMLFormElement>): void => {
+      ev.preventDefault();
+      const form = ev.currentTarget; // EventTarget & HTMLFormElement
+      ...
+  }
+```
+
+A partir de ahí existen diversas posibilidades
+
+- obtener las referencias a los elementos del formulario y acceder a sus valores directamente. Todas las referencias a los controles están incluidas en el HTMLFormElement
+
+- utilizar un FORMData, que es un objeto que representa los datos de un formulario y permite acceder a los valores de los campos del formulario de manera más sencilla.
+
+##### 🧿 Componente CourseRegistration
+
+```tsx
+return (
+  <form onSubmit={handleSubmit}>
+    <legend>Contacta con nosotros</legend>
+    <p>Ejemplo de 'Controlled Form'</p>
+
+    <div className="group-control">
+      <input
+        type="text"
+        placeholder="Dime tu nombre"
+        required
+        name="userName"
+        value={userData.userName}
+      />
+    </div>
+
+    <div className="group-control">
+      <input
+        type="email"
+        placeholder="Dime tu email"
+        required
+        name="email"
+        value={userData.email}
+      />
+    </div>
+
+    <div className="group-control">
+      <input
+        type="password"
+        placeholder="Dime tu password"
+        required
+        name="passwd"
+        value={userData.passwd}
+      />
+    </div>
+
+    <div className="group-control">
+      <input
+        type="checkbox"
+        id="is-ok"
+        name="isOkConditions"
+        checked={userData.isOkConditions}
+      />
+      <label htmlFor="is-ok">Acepto las condiciones...</label>
+    </div>
+
+    <fieldset name="turn">
+      <legend>Selecciona un turno</legend>
+      <input type="radio" name="turn" id="turno-m" value="M" />
+      <label htmlFor="turno-m">Mañana</label>
+      <input type="radio" name="turn" id="turno-t" value="T" />
+      <label htmlFor="turno-t">Tarde</label>
+      <input type="radio" name="turn" id="turno-n" value="N" />
+      <label htmlFor="turno-n">Noche</label>
+    </fieldset>
+
+    <label htmlFor="course">Elige un curso</label>
+    <select name="course" id="course" value={userData.course}>
+      <option value=""></option>
+      <option value="A">Angular</option>
+      <option value="R">React</option>
+      <option value="N">Node</option>
+    </select>
+
+    <button type="submit">Enviar</button>
+  </form>
+);
+```
+
+En el método `handleSubmit`, se puede acceder a los valores de los campos del formulario utilizando las propiedades del objeto `HTMLFormElement`, que es el tipo del elemento del formulario. Esto permite acceder a los valores de los campos del formulario sin necesidad de almacenarlos en el estado interno del componente.
+
+```tsx
+const userNameElement = formElements.namedItem('userName') as HTMLInputElement;
+const emailElement = formElements.namedItem('email') as HTMLInputElement;
+const passwdElement = formElements.namedItem('passwd') as HTMLInputElement;
+const isOkConditionsElement = formElements.namedItem(
+  'isOkConditions',
+) as HTMLInputElement;
+const turnElement = formElements.namedItem('turn') as HTMLInputElement;
+const courseElement = formElements.namedItem('course') as HTMLSelectElement;
+const result = {
+  userName: userNameElement.value,
+  email: emailElement.value,
+  passwd: passwdElement.value,
+  // como isOkConditions es un booleano, se obtiene del atributo checked
+  isOkConditions: isOkConditionsElement.checked,
+  turn: turnElement.value,
+  course: courseElement.value,
+};
+```
+
+Si queremos refactorizar el código anterior, obtendríamos algo como esto:
+
+```tsx
+const result: Record<string, string | boolean> = {};
+for (const key of keys) {
+  const element = formElements.namedItem(key) as HTMLInputElement;
+  // Si el elemento es un checkbox, se obtiene el valor del atributo checked
+  result[key] =
+    typeof userData[key] === 'boolean'
+      ? element.checked
+      : (result[key] = element.value);
+}
+```
+
+##### FormData
+
+El objeto `FormData` es un objeto que representa los datos de un formulario y permite acceder a los valores de los campos del formulario de manera más sencilla. Se puede crear un objeto `FormData` a partir de un elemento HTML de formulario.
+La interfaz FormData proporciona una iterador que permite obtener un conjunto de parejas clave/valor que representan los campos de un formulario y sus valores.
+
+```tsx
+  const formData = new FormData(form);
+);
+```
+
+- accediendo manualmente a cada elemento del formData gracias al método get y el nombre del campo
+
+```tsx
+const formData = new FormData(form);
+const result = {
+  userName: formData.get('userName') as string,
+  email: formData.get('email') as string,
+  passwd: formData.get('passwd') as string,
+  // isOkConditions es un booleano, pero FormData devuelve un string
+  isOkConditions: formData.get('isCondition') === 'on',
+  turn: formData.get('turn') as string,
+  course: formData.get('course') as string,
+};
+return result;
+```
+
+- utilizando los métodos de la clase Object, como `Object.entries`, `Object.keys` o `Object.values`, se puede obtener un array de pares clave/valor, donde cada par representa un campo del formulario y su valor.
+
+```tsx
+const formData = new FormData(form);
+const data: Record<string, FormDataEntryValue> = Object.fromEntries(formData);
+const result = {
+  userName: data.userName as string,
+  email: data.email as string,
+  passwd: data.passwd as string,
+  // isOkConditions es un booleano, pero FormData devuelve un string
+  isOkConditions: data.isCondition === 'on',
+  turn: data.turn as string,
+  course: data.course as string,
+};
+return result;
+```
+
+En lugar de crear el objeto result de forma manual, convendría hacerlo en la iteración, sustituyendo el uso de `fromEntries` por nuestro propio bucle for, que nos permita decidir el resultado en cada caso.
+
+```tsx
+const formData = new FormData(form);
+const data: Record<string, FormDataEntryValue | boolean> = { ...user };
+
+for (const [key, value] of formData) {
+  if (typeof user[key as keyof typeof user] === 'boolean') {
+    data[key] = value === 'on';
+  }
+}
+
+return data;
+```
+
+Este proceso lo podemos encapsular en una función que reciba el formulario y devuelva un objeto con los datos del formulario.
+
+```tsx
+const getDataForm = (form: HTMLFormElement, user: User): User => {
+  const formData = new FormData(form);
+  const data: Record<string, FormDataEntryValue | boolean> = { ...user };
+
+  for (const [key, value] of formData) {
+    if (typeof user[key as keyof typeof user] === 'boolean') {
+      data[key] = value === 'on';
+    } else {
+      data[key] = value;
+    }
+  }
+
+  return data as User;
+};
+```
+
+El problema de este método es que esta acoplado a que la entidad de los datos sea User. Usando genéricos, se puede hacer más genérica y reutilizable.
+
+```tsx
+type ValidT<T> =
+  T extends Record<string, FormDataEntryValue | boolean> ? T : never;
+const getDataForm = <T,>(form: HTMLFormElement, entity: ValidT<T>): T => {
+  const formData = new FormData(form);
+  const data: Record<string, FormDataEntryValue | boolean> = { ...entity };
+
+  for (const [key, value] of formData) {
+    if (typeof entity[key as keyof typeof entity] === 'boolean') {
+      data[key] = value === 'on';
+    } else if (typeof entity[key as keyof typeof entity] === 'string') {
+      data[key] = value;
+    }
+  }
+
+  return data as T;
 };
 ```
 
