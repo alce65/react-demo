@@ -1,9 +1,13 @@
-import type { JSX } from "react";
-import "./App.css";
-import { Initial } from "./components/initial";
+import type { JSX } from 'react';
+import './App.css';
+// import { Form } from './components/7.form';
+import { FormNC } from './components/7b.form.NC';
+//import { Initial } from "./components/initial";
 
 const App = (): JSX.Element => {
-  return <Initial />;
+  return <FormNC />; 
+  // <Form />;
+  // <Initial />;
 };
 
 export default App;
