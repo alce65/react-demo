@@ -37,7 +37,8 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
   - State -> Counter
   - Literales y tipos de unión -> Button
   - La prop children -> Button
-    - Composición de componentes y Single Responsibility Principle
+    - Composición de componentes
+    - [S]OLID: Single Responsibility Principle
   - Tipado de eventos del DOM -> CounterEvent
     - Target y currentTarget
     - Firmas de indice (Records)
@@ -47,3 +48,11 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
 ## Día 3 (X 14/05)
 
 - Formularios
+  - Formularios controlados
+  - Tipado de eventos Change y Submit
+  - Ejemplos
+  - Formularios no controlados. FormData
+- Tipos unión e intersección
+  - Tipos unión: uniones discriminadas
+  - Intersección de tipos. Extensión de Interfaces
+  - SOL[I]D:Interface Segregation Principle
