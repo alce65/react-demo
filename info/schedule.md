@@ -56,3 +56,26 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
   - Tipos unión: uniones discriminadas
   - Intersección de tipos. Extensión de Interfaces
   - SOL[I]D: Interface Segregation Principle
+
+## Día 4 (J 15/05)
+
+- Review: función getDataForm usando FormData.
+  - Uso del iterable.
+  - Uso de genericos para abstraer la función
+- Módulo 2
+- Sobrecarga de funciones
+  - Ejemplo: función format
+  - Ejemplo: función getDisplayValue en un componente
+  - SObrecarga de métodos
+- Tipado de hooks de react
+  - useState y useEffect
+  - Asincronía en useEffect. useCallback
+  - useRef
+
+## Día 5 (J 19/05)
+
+- Review: problemas de Linter
+  - Comando linter en package.json
+  - Fichero main de React
+- forwardRef. Novedades en React 19
+- Hook personalizados (Custom Hooks)

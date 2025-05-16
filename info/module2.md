@@ -41,15 +41,21 @@ module: 2
 
 ### 📘 Sobrecarga de funciones y tipos de retorno
 
-La **sobrecargas de funciones** (**function overloads**) consiste en definir una función con múltiples "firmas", con diversos tipos de parámetros y de retorno, permitiendo que la función pueda ser llamada con diferentes tipos de argumentos para que devuelva si es necesario diferentes tipos de valores. El tipo de retorno se puede inferir o declarar explícitamente.
+La **sobrecargas de funciones** (**function overloads**) consiste en definir una función con múltiples "firmas", con diversos tipos y número de parámetros y diferentes tipos de retorno, permitiendo que la función pueda ser llamada con diferentes tipos de argumentos para que devuelva si es necesario diferentes tipos de valores. El tipo de retorno se puede inferir o declarar explícitamente.
 
 Esto es útil cuando una función puede aceptar distintos tipos de argumentos y retornar diferentes tipos según el caso.
 
 ```ts
-function format(value: string): string;
-function format(value: number): string;
-function format(value: string | number): string {
-  return typeof value === "number" ? value.toFixed(2) : value.trim();
+export function format(value: string): number;
+export function format(value: number): string;
+export function format(value: number, decimals: number): string;
+export function format(
+  value: string | number,
+  decimals?: number,
+): string | number {
+  return typeof value === 'number'
+    ? value.toFixed(decimals && 2)
+    : Number(value.trim());
 }
 ```
 
@@ -67,14 +73,17 @@ Una función que formatea el valor mostrado en un campo dependiendo de si se tra
 
 ```ts
 // 1️⃣ Firmas de sobrecarga
-function getDisplayValue(value: number): string;
+function getDisplayValue(value: number, decimals: number): string;
 function getDisplayValue(value: Date): string;
 function getDisplayValue(value: string): string;
 
 // 2️⃣ Implementación
-function getDisplayValue(value: number | Date | string): string {
-  if (typeof value === "number") {
-    return value.toLocaleString();
+function getDisplayValue(
+  value: number | Date | string,
+  decimals?: number,
+): string {
+  if (typeof value === 'number') {
+    return value.toFixed(decimals);
   }
 
   if (value instanceof Date) {
@@ -108,7 +117,7 @@ export const UserInfo = () => {
       <DisplayField label="Edad" value={28} />
       <DisplayField
         label="Fecha de nacimiento"
-        value={new Date("1995-08-15")}
+        value={new Date('1995-08-15')}
       />
       <DisplayField label="Nombre" value="   Alice   " />
     </div>
@@ -119,7 +128,7 @@ export const UserInfo = () => {
 Ventajas de usar sobrecarga aquí
 
 - Permite que getDisplayValue sea más expresiva: ves qué tipos maneja explícitamente.
-- Mejora la autocompletación y seguridad de tipos cuando se llama desde otras funciones o componentes.
+- Mejora el auto completado y la seguridad de tipos cuando se llama desde otras funciones o componentes.
 - Encapsula lógica de formateo reutilizable en una sola función.
 
 ### 📘 Tipado de useState, useEffect y hooks básicos
@@ -145,7 +154,7 @@ useEffect no necesita tipado explícito, pero el uso interno debe ser coherente 
 Por ejemplo, si tienes un efecto que depende de un estado de tipo `number`, asegúrate de que el efecto maneje correctamente ese tipo.
 
 ```tsx
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 const Counter = () => {
   const [count, setCount] = useState<number>(0);
@@ -310,7 +319,7 @@ El problema se produce cuando tenemos un componente hijo que tiene que recibir u
 Veamos un ejemplo con un componente `Input` que recibe una referencia y la pasa a un elemento `input` dentro de su implementación. El componente padre puede crear la referencia y pasarla al componente hijo.
 
 ```tsx
-import React, { forwardRef, useRef } from "react";
+import React, { forwardRef, useRef } from 'react';
 type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 // type InputProps ={
@@ -404,7 +413,7 @@ Puedes usar genéricos (\<T>) para hacerlos más reutilizables.
 En el siguiente ejemplo se muestra un hook que alterna entre dos estados, devolviendo un array con el estado actual y una función para alternar entre ellos. Este tipo de retorno como un array con el estado y la función, sigue el patrón de los hooks de React, como useState o useReducer.
 
 ```ts
-import { useState } from "react";
+import { useState } from 'react';
 
 export function useToggle(initial: boolean = false): [boolean, () => void] {
   const [state, setState] = useState<boolean>(initial);
@@ -416,7 +425,7 @@ export function useToggle(initial: boolean = false): [boolean, () => void] {
 Al utilizar el hook, se puede ver como se obtiene el estado y la función para alternar entre los dos estados, ambos tipados correctamente
 
 ```tsx
-import { useToggle } from "./useToggle";
+import { useToggle } from './useToggle';
 
 export const TestComponent = () => {
   const [state, toggle] = useToggle();
@@ -434,7 +443,7 @@ En el segundo ejemplo que veremos, algo más complejo, se muestra un hook que gu
 ```ts
 export function useLocalStorage<T>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, (value: T) => void] {
   const [storedValue, setStoredValue] = useState<T>(() => {
     const item = localStorage.getItem(key);
@@ -463,9 +472,9 @@ La función setter `setValue` actualiza el valor en el estado y en localStorage.
 El uso del hook es similar al de useState, pero con la diferencia de que el valor se guarda en localStorage y persiste entre recargas de página.
 
 ```tsx
-import { useLocalStorage } from "./useLocalStorage";
+import { useLocalStorage } from './useLocalStorage';
 export const TestComponent = () => {
-  const [name, setName] = useLocalStorage<string>("name", "Juan");
+  const [name, setName] = useLocalStorage<string>('name', 'Juan');
 
   return (
     <div>
@@ -500,7 +509,7 @@ type Props = {
 };
 
 const Form = ({ onSubmit }: Props) => {
-  const handleSubmit = () => onSubmit("Juan");
+  const handleSubmit = () => onSubmit('Juan');
   return <button onClick={handleSubmit}>Enviar</button>;
 };
 ```
@@ -513,8 +522,8 @@ Las promesas deben estar correctamente tipadas, especialmente en funciones async
 type User = { id: number; name: string };
 
 const fetchUser = async (): Promise<User> => {
-  const res = await fetch("/api/user");
-  if (!res.ok) throw new Error("Error al obtener el usuario");
+  const res = await fetch('/api/user');
+  if (!res.ok) throw new Error('Error al obtener el usuario');
   return await res.json();
 };
 
@@ -533,11 +542,11 @@ const handleClick = async () => {
 Vamos a crear un componente que carga datos de una API y muestra un "spinner" mientras espera. El componente utiliza `useState` para manejar el estado de carga y `useEffect` para cargar los datos al montar el componente.
 
 ```tsx
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 type User = { id: number; name: string };
 const fetchUser = async (): Promise<User> => {
-  const res = await fetch("/api/user");
-  if (!res.ok) throw new Error("Error al obtener el usuario");
+  const res = await fetch('/api/user');
+  if (!res.ok) throw new Error('Error al obtener el usuario');
   return await res.json();
 };
 
