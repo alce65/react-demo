@@ -21,10 +21,10 @@ export const Counter = ({ initial }: Props): JSX.Element => {
 export const CounterG: React.FC<Props> = ({ initial }) => {
   const [count, setCount] = useState(initial);
 
-  const [user, setUser] = useState<string | null>(null);
+  // const [user, setUser] = useState<string | null>(null);
 
-  setUser('Pepe');
-  setUser(null);
+  // setUser('Pepe');
+  // setUser(null);
 
   // const handleClick(n = 1) => {
   //   setCount(count + n)

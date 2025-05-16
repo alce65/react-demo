@@ -38,7 +38,7 @@ export const FormNC: React.FC = () => {
   // };
 
   // Gestión del formulario accediendo a los datos mediante
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     const form = e.currentTarget;
 

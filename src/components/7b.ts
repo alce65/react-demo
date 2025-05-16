@@ -1,12 +1,10 @@
+type U = FormDataEntryValue | number | boolean;
+type ValidT<T> = T extends Record<string, U> ? T : never;
 
-type U = FormDataEntryValue | number | boolean
-type ValidT<T> =
-  T extends Record<string, U> ? T : never;
-
-export const getData = <T>(form: HTMLFormElement, entity: ValidT<T>) => {
+export const getData = <T>(form: HTMLFormElement, entity: ValidT<T>): T => {
   const formData = new FormData(form);
 
-  const data: Record<string,U > = {
+  const data: Record<string, U> = {
     ...entity,
   };
 

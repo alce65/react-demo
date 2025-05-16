@@ -15,12 +15,12 @@ const initialUser = {
 export const Form: React.FC = () => {
   const [user, setUser] = useState<User>(initialUser);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     console.log('User:', user);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     // setUser({...user, [name]: value});
     setUser((prevUser) => ({
