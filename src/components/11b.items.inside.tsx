@@ -16,10 +16,11 @@ export const Items: React.FC<Props> = ({ getData }) => {
     const loadData = async (): Promise<void> => {
       const data = await getData();
       setItems(() => data);
-    };
 
+    };
+    console.log('Items loaded');
     loadData();
-  }, []);
+  }, [getData]);
 
   // React Hook useEffect has a missing dependency: 'loadData'.
   // Either include it or remove the dependency array.

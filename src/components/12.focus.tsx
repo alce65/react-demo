@@ -14,7 +14,10 @@ export const FormFocus: React.FC = () => {
   //   };
 
   const focusInput = (): void => {
-    inputRef.current?.focus();
+    if (inputRef.current == null) {
+      return;
+    }
+    inputRef.current.focus();
   };
 
   return (

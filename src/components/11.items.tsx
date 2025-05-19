@@ -15,18 +15,23 @@ export const Items: React.FC<Props> = ({ getData }) => {
   const loadData = useCallback(async (): Promise<void> => {
     const data = await getData();
     setItems(() => data);
-  }, []);
+  }, [getData]);
 
-  //   const loadDataCB = (): void => {
-  //     getData().then((data) => {
-  //       setItems(() => data);
-  //     });
-  //   };
+  // const loadData =  async (): Promise<void> => {
+  //   const data = await getData();
+  //   setItems(() => data);
+  // };
+
+  // const loadDataCD = (): void => {
+  //   getData().then((data) => {
+  //     setItems(() => data);
+  //   });
+  // };
 
   useEffect(() => {
     console.log('loadData');
     loadData();
-  }, []);
+  }, [loadData]);
 
   return (
     <div>
@@ -44,15 +49,29 @@ export const Items: React.FC<Props> = ({ getData }) => {
 };
 
 export const ItemsWrapper: React.FC = () => {
+  // const getData = async (): Promise<Item[]> => {
+  //   return new Promise((resolve) => {
+  //     setTimeout(() => {
+  //       console.log('getData');
+  //       resolve([
+  //         { id: 1, name: 'Pepe' },
+  //         { id: 2, name: 'Luis' },
+  //         { id: 3, name: 'Rosa' },
+  //       ]);
+  //     }, 100);
+  //   });
+  // };
+
   const getData = useCallback(async (): Promise<Item[]> => {
     return new Promise((resolve) => {
       setTimeout(() => {
+        console.log('getData');
         resolve([
           { id: 1, name: 'Pepe' },
           { id: 2, name: 'Luis' },
           { id: 3, name: 'Rosa' },
         ]);
-      }, 1000);
+      }, 100);
     });
   }, []);
 
