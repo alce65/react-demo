@@ -66,16 +66,32 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
 - Sobrecarga de funciones
   - Ejemplo: función format
   - Ejemplo: función getDisplayValue en un componente
-  - SObrecarga de métodos
+  - Sobrecarga de métodos
 - Tipado de hooks de react
   - useState y useEffect
   - Asincronía en useEffect. useCallback
   - useRef
 
-## Día 5 (J 19/05)
+## Día 5 (L 19/05)
 
 - Review: problemas de Linter
   - Comando linter en package.json
-  - Fichero main de React
+  - Fichero main de React: el operador ! (non-null assertion)
 - forwardRef. Novedades en React 19
 - Hook personalizados (Custom Hooks)
+  - Ejemplo: useToggle. Tupla como retorno
+  - Ejemplo: useLocalStorage<T>. Genéricos en los Hooks
+- Promese y callbacks. Encapsulando fetch como servicio
+  - Tipado de la promesa
+  - Gestión unificada de los errores
+- Estados y asincronía (promesas): componente User
+  - Estados: loading, success y error. Tipado
+  - Carga de datos en el componente.
+  - Función asíncrona dentro del useEffect
+
+## Día 6 (M 20/05)
+
+- Estados, hooks y asincronía (promesas): hook UseUser
+  - Abstracción del código del componente User
+  - Tipado del hook
+  - Uso del hook en el componente
