@@ -19,15 +19,25 @@ module: 2
     - [La prop `ref` en React 19](#la-prop-ref-en-react-19)
   - [📘 Hooks personalizados (custom hooks) tipados](#-hooks-personalizados-custom-hooks-tipados)
     - [🧿 Hook básico useToggle](#-hook-básico-usetoggle)
-    - [🧿Hook genérico useLocalStorage\<T\>()](#hook-genérico-uselocalstoraget)
+    - [🧿 Hook genérico useLocalStorage\<T\>()](#-hook-genérico-uselocalstoraget)
     - [Hooks personalizados y efectos](#hooks-personalizados-y-efectos)
   - [📘 Callbacks y promesas en React](#-callbacks-y-promesas-en-react)
     - [Callbacks](#callbacks)
     - [Promesas](#promesas)
-    - [Estados y asincronía (promesas)](#estados-y-asincronía-promesas)
-    - [Estados, hooks y asincronía (promesas)](#estados-hooks-y-asincronía-promesas)
-  - [🌐 Patrón Flux: reducers y actions 🎯🎯🎯🎯🎯🎯🎯](#-patrón-flux-reducers-y-actions-)
-  - [📝 Resumen de ejercicios sugeridos](#-resumen-de-ejercicios-sugeridos)
+    - [🧿 Estados y asincronía (promesas): componente User](#-estados-y-asincronía-promesas-componente-user)
+    - [🧿 Estados, hooks y asincronía (promesas): hook UseUser](#-estados-hooks-y-asincronía-promesas-hook-useuser)
+  - [🌐 Patrón Flux: reducers y actions](#-patrón-flux-reducers-y-actions)
+    - [El patrón flux nativo en react: useReducer](#el-patrón-flux-nativo-en-react-usereducer)
+    - [🧿 El componente `Counter` con el patrón Flux](#-el-componente-counter-con-el-patrón-flux)
+      - [Definición del estado](#definición-del-estado)
+      - [Acciones](#acciones)
+      - [Reducer](#reducer)
+      - [useReducer como evolución de useState](#usereducer-como-evolución-de-usestate)
+      - [El componente: utilizando useReducer](#el-componente-utilizando-usereducer)
+    - [Organización y mejoras del código](#organización-y-mejoras-del-código)
+      - [Lógica Async. Thunks](#lógica-async-thunks)
+      - [🌐 Contextos](#-contextos)
+  - [📝 Ejercicios sugeridos](#-ejercicios-sugeridos)
 
 ## 🧩 MÓDULO 2: Funciones y Hooks con TypeScript en React
 
@@ -41,21 +51,15 @@ module: 2
 
 ### 📘 Sobrecarga de funciones y tipos de retorno
 
-La **sobrecargas de funciones** (**function overloads**) consiste en definir una función con múltiples "firmas", con diversos tipos y número de parámetros y diferentes tipos de retorno, permitiendo que la función pueda ser llamada con diferentes tipos de argumentos para que devuelva si es necesario diferentes tipos de valores. El tipo de retorno se puede inferir o declarar explícitamente.
+La **sobrecargas de funciones** (**function overloads**) consiste en definir una función con múltiples "firmas", con diversos tipos de parámetros y de retorno, permitiendo que la función pueda ser llamada con diferentes tipos de argumentos para que devuelva si es necesario diferentes tipos de valores. El tipo de retorno se puede inferir o declarar explícitamente.
 
 Esto es útil cuando una función puede aceptar distintos tipos de argumentos y retornar diferentes tipos según el caso.
 
 ```ts
-export function format(value: string): number;
-export function format(value: number): string;
-export function format(value: number, decimals: number): string;
-export function format(
-  value: string | number,
-  decimals?: number,
-): string | number {
-  return typeof value === 'number'
-    ? value.toFixed(decimals && 2)
-    : Number(value.trim());
+function format(value: string): string;
+function format(value: number): string;
+function format(value: string | number): string {
+  return typeof value === 'number' ? value.toFixed(2) : value.trim();
 }
 ```
 
@@ -73,17 +77,14 @@ Una función que formatea el valor mostrado en un campo dependiendo de si se tra
 
 ```ts
 // 1️⃣ Firmas de sobrecarga
-function getDisplayValue(value: number, decimals: number): string;
+function getDisplayValue(value: number): string;
 function getDisplayValue(value: Date): string;
 function getDisplayValue(value: string): string;
 
 // 2️⃣ Implementación
-function getDisplayValue(
-  value: number | Date | string,
-  decimals?: number,
-): string {
+function getDisplayValue(value: number | Date | string): string {
   if (typeof value === 'number') {
-    return value.toFixed(decimals);
+    return value.toLocaleString();
   }
 
   if (value instanceof Date) {
@@ -128,7 +129,7 @@ export const UserInfo = () => {
 Ventajas de usar sobrecarga aquí
 
 - Permite que getDisplayValue sea más expresiva: ves qué tipos maneja explícitamente.
-- Mejora el auto completado y la seguridad de tipos cuando se llama desde otras funciones o componentes.
+- Mejora el autocompletado y seguridad de tipos cuando se llama desde otras funciones o componentes.
 - Encapsula lógica de formateo reutilizable en una sola función.
 
 ### 📘 Tipado de useState, useEffect y hooks básicos
@@ -212,7 +213,7 @@ React Hook useEffect has a missing dependency: 'loadData'. Either include it or 
 El problema es doble:
 
 - si no se incluye, es que la función `loadData` no se volverá a ejecutar si cambia el valor de `getData`, y por tanto no se cargarán los nuevos datos.
-- si no se incluye, el efecto se ejecutará cada vez que cambie el valor de `getData`, lo que puede ser innecesario y provocar **bucles infinitos**. Al ejecutar el componente se recibe la función, que es un nuevo objeto, aunque sea la misma función. El useEffect lo detacta así y vuelve a ejecutar el componente, que recibe un nuevo objeto `getData`, y así sucesivamente.
+- si no se incluye, el efecto se ejecutará cada vez que cambie el valor de `getData`, lo que puede ser innecesario y provocar **bucles infinitos**. Al ejecutar el componente se recibe la función, que es un nuevo objeto, aunque sea la misma función. El useEffect lo detecta así y vuelve a ejecutar el componente, que recibe un nuevo objeto `getData`, y así sucesivamente.
 
 Si incluimos la función en el array de dependencias, el linter nos avisa del problema y nos sugiere la solución.
 
@@ -222,7 +223,7 @@ The 'loadData' function makes the dependencies of useEffect Hook (at line 26) ch
 
 #### useCallback
 
-La solución es envolver la función `loadData` en un `useCallback`, que se encargará de memonizar la función y evitar que cambie su referencia, a menos que cambien las dependencias del callback.
+La solución es envolver la función `loadData` en un `useCallback`, que se encargará de 'memoizar' (memoize) la función y evitar que cambie su referencia, a menos que cambien las dependencias del callback.
 
 ```tsx
 const loadData = useCallback(async (): Promise<void> => {
@@ -232,7 +233,7 @@ const loadData = useCallback(async (): Promise<void> => {
 }, [getData]);
 ```
 
-Al estar `getData` en el array de dependencias del `useCallback` se repite el problema con esta segunda función, que también deberá memonizarse con un nuevo useCallback para evitar que cambie su referencia, a menos que cambien las dependencias del callback.
+Al estar `getData` en el array de dependencias del `useCallback` se repite el problema con esta segunda función, que también deberá 'memoizarse' con un nuevo useCallback para evitar que cambie su referencia, a menos que cambien las dependencias del callback.
 
 ```tsx
 const getData = useCallback(async (): Promise<Item[]> => {
@@ -257,7 +258,7 @@ const inputRef = useRef<HTMLInputElement>(null);
 
 En otros casos, el tipo de `useRef` es `React.RefObject<T>`, donde `T` es el tipo del elemento al que se hace referencia. Por ejemplo, si se quiere referenciar un input, el tipo sería `HTMLInputElement`.
 
-Existe una forma alternativa de crear una referencia, unando una función que no es un hook, pero es menos habitual
+Existe una forma alternativa de crear una referencia, usando una función que no es un hook, pero es menos habitual
 
 ```tsx
 const inputRef = React.createRef<HTMLInputElement>();
@@ -397,7 +398,7 @@ const Input: React.FC<InputProps> = ({ name, ref }) => {
 
 ### 📘 Hooks personalizados (custom hooks) tipados
 
-Los hooks personalizados (useX) permiten extraer y reutilizar lógica con estado. Son funciones con ciertas restriciones exigidas por React:
+Los hooks personalizados (useX) permiten extraer y reutilizar lógica con estado. Son funciones con ciertas restricciones exigidas por React:
 
 - su nombre empieza por "use"
 - utilizan otros hooks de React como useState, useEffect, etc.
@@ -436,7 +437,7 @@ export const TestComponent = () => {
 
 Sin el tipado explícito del valor devuelto, el tipo de `state` y de `toggle` sería una unión de tipos `boolean | () => void`, sin que typescript pudiera discriminar el tipo exacto de ambos.
 
-#### 🧿Hook genérico useLocalStorage\<T>()
+#### 🧿 Hook genérico useLocalStorage\<T>()
 
 En el segundo ejemplo que veremos, algo más complejo, se muestra un hook que guarda un valor en localStorage. En su tipado es necesario utilizar un genérico para que el valor pueda ser de cualquier tipo, y no solo de un tipo específico. El hook devuelve el valor almacenado y una función para actualizarlo.
 
@@ -459,7 +460,7 @@ export function useLocalStorage<T>(
 }
 ```
 
-El parámetro de `useState<T>` puede ser T o un callback que retorne T, como en este caso, qpodría ser definida previamente como función con nombre `calculateInitialValue`, y que se llamaría en el primer argumento de useState.
+El parámetro de `useState<T>` puede ser T o un callback que retorne T, como en este caso, podría ser definida previamente como función con nombre `calculateInitialValue`, y que se llamaría en el primer argumento de useState.
 
 ```ts
 const calculateInitialValue = (): T => {
@@ -537,7 +538,7 @@ const handleClick = async () => {
 };
 ```
 
-#### Estados y asincronía (promesas)
+#### 🧿 Estados y asincronía (promesas): componente User
 
 Vamos a crear un componente que carga datos de una API y muestra un "spinner" mientras espera. El componente utiliza `useState` para manejar el estado de carga y `useEffect` para cargar los datos al montar el componente.
 
@@ -593,7 +594,7 @@ export const UserComponent: React.FC = () => {
 
 Si se quisiera declarar fuera del efecto, para luego exportarla a un hook personalizado, habría que crearla utilizando el hook de react `useCallback` para memonizarla y poderla añadir en el array de dependencias de `useEffects`.
 
-#### Estados, hooks y asincronía (promesas)
+#### 🧿 Estados, hooks y asincronía (promesas): hook UseUser
 
 La lógica de negocio que gestiona los estados del componente, incluyendo la carga de datos, se puede encapsular en un hook personalizado. Este hook puede manejar el estado de carga, el estado de error y la lógica de carga de datos, permitiendo que el componente sea más limpio y fácil de entender.
 
@@ -643,12 +644,450 @@ export const UserComponent: React.FC = () => {
 };
 ```
 
-### 🌐 Patrón Flux: reducers y actions 🎯🎯🎯🎯🎯🎯🎯
+### 🌐 Patrón Flux: reducers y actions
 
-El patrón descrito anteriomente puede ser válido en si mismo, pero no es el más adecuado para aplicaciones grandes y complejas. En este caso, es mejor utilizar un patrón de gestión de estado como Redux o el patrón Flux, que permite gestionar el estado de la aplicación de forma más eficiente y escalable.
-El patrón Flux se basa en un flujo unidireccional de datos, donde las acciones son despachadas a un store, que actualiza su estado y notifica a los componentes que dependen de ese estado. Este patrón permite separar la lógica de negocio de la lógica de presentación, lo que facilita el mantenimiento y la escalabilidad de la aplicación.
+El patrón descrito anteriormente puede ser válido en si mismo, pero no es el más adecuado para aplicaciones grandes y complejas. En este caso, es mejor utilizar un patrón de gestión de estado como Redux o el **patrón Flux**, que permite gestionar el estado de la aplicación de forma más eficiente y escalable.
 
-### 📝 Resumen de ejercicios sugeridos
+**Flux** es una arquitectura para el manejo y el flujo de los datos en una aplicación web, particularmente en el Front-End.
+
+- vendría a sustituir el patrón MVC (o MVVM).
+- fue ideada por Facebook ante el problema de una comunicación bidireccional entre numerosos modelos y controladores, haciéndoles muy difícil poder depurar y rastrear errores.
+- el patrón Flux se basa en un flujo unidireccional de datos
+  - los datos viajan desde la vista por medio de acciones que llegan a un Store (son despachadas a un Store)
+  - desde el Store se actualizará la vista de nuevo.
+
+![Diagrama del patrón flux](flux.svg)
+
+Este patrón permite separar la lógica de negocio de la lógica de presentación, lo que facilita el mantenimiento y la escalabilidad de la aplicación.
+
+#### El patrón flux nativo en react: useReducer
+
+En react
+
+- el Store corresponde a un **estado** más o menos complejos y la lógica para actualizarlo por medio de un reducer.
+- el Store utiliza un **reducer**, una función responsable de recibir las acciones y actualizar el estado en consecuencia. Es una función pura que toma el estado actual y una acción, y devuelve un nuevo estado.
+
+```tsx
+type Reducer = (state: State, action: Action): State
+```
+
+- los cambios de estado se definen como **acciones**, que son objetos que describen el cambio que se quiere realizar en el estado y que son despachadas al Store,
+- gracias al **dispatcher**, los componentes pueden enviar (despachar) acciones al Store para actualizar el estado, y se actualizan automáticamente cuando el estado cambia.
+- react **notifica** los cambios de estado a los componentes que dependen de ese estado y en consecuencia se actualizará la vista de esos componentes.
+
+![Diagrama del patrón flux](flux.react.svg)
+
+#### 🧿 El componente `Counter` con el patrón Flux
+
+El componente `CounterFlux` es un ejemplo de un componente que utiliza el patrón Flux para gestionar su estado de forma más eficiente y escalable. El componente tiene un contador que se puede incrementar, decrementar y reiniciar. Utiliza `useReducer` para gestionar el estado del contador y despachar acciones al reducer.
+
+Para crearlo comenzamos por definir la entidad que representara nuestro estado, las acciones que representaran sus cambios y el reducer que las procesará.
+
+##### Definición del estado
+
+El estado es un objeto que representa el estado del contador en cada momento. En este caso, el estado tiene tres propiedades: `value`, `clicks` y `isActive`.
+
+```tsx
+type CounterState = {
+  value: number;
+  clicks: number;
+  isActive: boolean;
+};
+```
+
+Los posibles cambios, que representaremos como acciones son:
+
+- `start`: inicia el contador, estableciendo `isActive` a `true`.
+- `update`: actualiza el valor del contador y el número de clicks.
+- `reset`: reinicia el contador, estableciendo `value` y `clicks` a 0 y `isActive` a `false`.
+- `stop`: detiene el contador, estableciendo `isActive` a `false`.
+
+##### Acciones
+
+Una acción es un objeto que describe el cambio que se quiere realizar en el estado.
+Para ello tiene al menos una propiedad `type`, que indica el tipo de acción a realizar.
+
+```tsx
+type Action = {
+  type: 'start' | 'update' | 'reset' | 'stop';
+};
+```
+
+Opcionalmente una acción puede tener la propiedad `payload` que contiene datos adicionales necesarios para realizar la acción.
+
+Las acciones deben tiparse separando sus distintas posibilidades, por ejemplo si tiene un payload o no, indicando los posibles valores en cada caso de la propiedad `type`.
+
+Una forma INCORRECTA de definir las acciones es la siguiente:
+
+```ts
+type Action = {
+  type: 'update' | 'reset' | 'start' | 'stop';
+  payload?: number;
+};
+```
+
+La forma correcta de hacerlo utiliza una unión de tipos discriminada, que ya conocemos
+
+```ts
+type ActionWithPayload = {
+  type: 'update';
+  payload: number;
+};
+
+type ActionWithOutPayload = {
+  type: 'start' | 'reset' | 'stop';
+};
+
+type Action = ActionWithOutPayload | ActionWithPayload;
+```
+
+##### Reducer
+
+El reducer es una **función pura** que toma el estado actual y una acción, y devuelve un nuevo estado..
+
+```tsx
+cont reducer = (state: CounterState, action: Action): CounterState => {
+  switch (action.type) {
+    default:
+      return state;
+  }
+};
+```
+
+Aunque el tipo se infiere correctamente podemos definirlo explícitamente como `Reducer` para que sea más claro.
+
+```tsx
+type Reducer = (state: CounterState, action: Action) => CounterState;
+```
+
+Igualmente podemos hacerlo a partir del tipo que nos proporciona React.
+
+```tsx
+type Reducer = React.Reducer<CounterState, Action>;
+```
+
+En el reducer se puede usar un switch para manejar las distintas acciones, y devolver el nuevo estado en cada caso. Para cada acción, en función de su `type` quedará definida la existencia o no de payload y en su caso, el tipo que le corresponde
+
+```tsx
+const reducer: Reducer = (
+  state: CounterState,
+  action: Action,
+): CounterState => {
+  switch (action.type) {
+    case 'start':
+      return {
+        ...state,
+        isActive: true,
+      };
+    case 'stop':
+      return {
+        ...state,
+        isActive: false,
+      };
+    case 'update':
+      return {
+        ...state,
+        value: state.value + action.payload,
+        clicks: state.clicks + 1,
+      };
+    case 'reset':
+      return {
+        ...state,
+        value: 0,
+        clicks: 0,
+        isActive: false,
+      };
+    default:
+      return state;
+  }
+};
+```
+
+##### useReducer como evolución de useState
+
+El hook `useReducer` es una forma de gestionar el estado en React, similar a `useState`, pero más adecuado para manejar estados complejos o múltiples sub-estados. Se basa en el patrón Flux y utiliza un reducer para gestionar el estado.
+
+**useState** devuelve un array con el estado y una función para actualizarlo, que viene tipada como `Dispatch<SetStateAction<S>>`, donde `S` es el tipo del estado. La función `setState` se utiliza para actualizar el estado, y puede recibir un nuevo valor o una función que recibe el estado anterior y devuelve el nuevo estado.
+
+```tsx
+const [state, setState] = useState<number>(0);
+```
+
+**useReducer** devuelve un array con el estado y una función `dispatch` para enviar acciones al reducer. El reducer es una función que toma el estado actual y una acción, y devuelve un nuevo estado. La función `dispatch` se utiliza para enviar acciones al reducer, que actualiza el estado en consecuencia.
+
+```tsx
+const [state, dispatcher] = useReducer<S, R>(reducer, initialState);
+```
+
+- el tipo S corresponde al tipo del estado, y puede inferirse a partir del valor inicial.
+- el tipo R corresponde al tipo de las acciones, que se envían al reducer.
+
+En los datos devueltos por `useReducer`:
+
+- El tipo del estado es `S`, que puede ser inferido a partir del valor inicial.
+- El tipo de la función dispatcher es `ActionDispatch<R>`, donde R es el tipo de las acciones, siendo inferido como `ActionDispatch<[action: Action]>`
+
+El tipo R es una tupla (tuple) de un solo elemento, que tiene que ser una acción, es decir un objeto que tiene al menos una propiedad `type` y opcionalmente una propiedad `payload`.
+
+##### El componente: utilizando useReducer
+
+En nuestro ejemplo de un contador usando el patrón Flux (CounterFlux), que nos permitirá gestionar el estado del contador de forma más eficiente y escalable.
+
+El valor inicial será un objeto que contiene el valor del contador y el número de clicks a 0 y un false que indica si el contador está inactivo.
+
+```tsx
+const initialCounter: CounterState = {
+  value: 0,
+  clicks: 0,
+  isActive: false,
+};
+```
+
+Cada uno de los handlers de los botones del componente `CounterFlux` despachará una acción al reducer, que actualizará el estado en consecuencia.
+
+```tsx
+export const Counter: React.FC = () => {
+  const [state, dispatch] = useReducer(reducer, initialCounter);
+
+  const handleChange = (value: number): void => {
+    if (state.isActive) {
+      dispatch({ type: 'update', payload: value });
+    }
+  };
+
+  const handleReset = (): void => {
+    dispatch({ type: 'reset' });
+  };
+
+  const handleStart = (): void => {
+    dispatch({ type: 'start' });
+  };
+
+  return (
+    <div>
+      <h1>Counter</h1>
+      <p>Value: {state.value}</p>
+      <p>Clicks: {state.clicks}</p>
+      <button onClick={handleStart}>Start</button>
+      <button onClick={() => handleChange(1)}>➕</button>
+      <button onClick={() => handleChange(-1)}>➖</button>
+      <button onClick={handleReset}>Reset</button>
+    </div>
+  );
+};
+```
+
+#### Organización y mejoras del código
+
+- El reducer y las acciones se pueden separar en archivos diferentes para mejorar la organización del código. Con frecuencia se crea para ello un directorio `store` o `redux` que contiene los reducers y las acciones.
+
+- El reducer puede ser más complejo y manejar múltiples acciones, por lo que es recomendable dividirlo en funciones más pequeñas y reutilizables. Esto facilita la lectura y el mantenimiento del código.
+
+- los tipos (nombres) de las acciones pueden definirse como constantes, para evitar errores tipográficos y facilitar su reutilización. Esto se puede hacer utilizando un objeto que contenga los tipos de las acciones.
+
+```tsx
+export const ActionTypes = {
+  start: 'counter@start',
+  stop: 'counter@stop',
+  update: 'counter@update',
+  reset: 'counter@reset',
+} as const;
+```
+
+- El typo de las acciones con payload se puede definir como un genérico, que permite reutilizar el reducer para diferentes tipos de acciones. Esto se puede hacer utilizando un tipo genérico `T` que representa el tipo del payload.
+
+```tsx
+type ActionWithPayload<T> = {
+  type: 'update';
+  payload: T;
+};
+```
+
+En este caso la combinación en un tipo final para todas las acciones es la que particulariza el genérico `T` como un number para el payload de la acción `update`.
+
+```tsx
+type Action = ActionWithOutPayload | ActionWithPayload<number>;
+```
+
+- Las acciones pueden crearse mediante el patrón factory: utilizando funciones que devuelven un objeto con el tipo y el payload, lo que permite crear acciones más complejas y reutilizables. Estas funciones suelen denominarse **action creators**.
+
+El objeto `ActionTypes` se define como `const` para que los tipos de las acciones sean inferidos como literales de cadena, lo que permite utilizar el operador `typeof` para obtener los tipos de las acciones.
+
+```tsx
+const start = (): ActionWithOutPayload => ({
+  type: ActionTypes.start,
+});
+const stop = (): ActionWithOutPayload => ({
+  type: ActionTypes.stop,
+});
+const update = (value: number): ActionWithPayload<number> => ({
+  type: ActionTypes.update,
+  payload: value,
+});
+const reset = (): ActionWithOutPayload => ({
+  type: ActionTypes.reset,
+});
+```
+
+- El componente utiliza los creadores de acciones a la hora de despachar las acciones al reducer, lo que permite crear acciones más complejas y reutilizables.
+
+```tsx
+const handleChange = (value: number): void => {
+  if (state.isActive) {
+    dispatch(update(value));
+  }
+};
+
+const handleReset = (): void => {
+  dispatch(reset());
+};
+
+const handleStart = (): void => {
+  dispatch(start());
+};
+
+const handleStop = (): void => {
+  dispatch(stop());
+};
+```
+
+- El reducer puede redefinirse para evitar el uso de `switch`, utilizando un objeto que mapea los tipos de las acciones a las funciones que manejan cada acción. Esto permite crear un reducer más limpio y fácil de entender.
+
+```tsx
+export const counterReducer: React.Reducer<CounterState, Action<1 | -1>> = (
+  state,
+  action,
+): CounterState => {
+  const reducers = {
+    [ActionTypes.start]: (): CounterState => ({
+      ...state,
+      isActive: true,
+    }),
+    [ActionTypes.stop]: (): CounterState => ({
+      ...state,
+      isActive: false,
+    }),
+    [ActionTypes.update]: (): CounterState => ({
+      ...state,
+      value: state.value + (action as ActionPayloadG<1 | -1>).payload,
+      clicks: state.clicks + 1,
+    }),
+    [ActionTypes.reset]: (): CounterState => ({
+      ...state,
+      value: 0,
+      clicks: 0,
+      isActive: false,
+    }),
+  };
+
+  return reducers[action.type] ? reducers[action.type]() : state;
+};
+```
+
+##### Lógica Async. Thunks
+
+Para el ejemplo vamos a crear un servicio que obtiene de un API un número aleatorio entre 1 y 10,
+
+```ts
+const url =
+  'https://www.random.org/integers/?num=1&min=1&max=9&col=1&base=10&format=plain&rnd=new';
+
+export const getRandom = (): Promise<number> => {
+  return fetch(url)
+    .then((response) => {
+      if (response.ok) {
+        return response.text();
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    })
+    .then((data) => {
+      const num = parseInt(data.split('\n')[0]);
+      console.log({ num });
+      return num;
+    });
+};
+```
+
+- Añadimos una nueva acción `roll: "counter@rollDice",`
+- Ampliamos el tipo de la acción `Action` para incluir el nuevo tipo de acción.
+
+```ts
+type ActionWithPayload<T> = {
+  type: typeof ActionTypes.update | typeof ActionTypes.roll;
+  payload: T;
+};
+```
+
+- Añadimos al componente un boton que llama a la función `getRandom` y despacha la acción `roll` con el número aleatorio obtenido.
+
+```tsx
+const handleRoll = async (): Promise<void> => {
+  const num = await getRandom();
+  const sign = Math.random() > 0.5 ? 1 : -1;
+
+  dispatch({ type: ActionTypes.roll, payload: num * sign });
+};
+```
+
+El problema es que la lógica de negocio del componente se ha visto afectada por la lógica de acceso a datos, lo que hace que el componente sea más difícil de entender y mantener. Para solucionar esto, se puede utilizar un patrón de diseño llamado **thunk**, que permite separar la lógica de negocio de la lógica de acceso a datos. Esto permite que el componente se mantenga limpio y fácil de entender, ya que la lógica de acceso a datos se encuentra en un lugar separado.
+
+Un creador de acciones puede ser un thunk, una función que devuelve otra función
+
+- la función envolvente recibe el payload inicial, si es necesario, y el callback que se ejecutará en el cuerpo de la función envolvente (e.g. getRandom).
+- la función devuelta recibe el dispatch y lo ejecuta pasándole como argumento la acción que tiene que despachar.
+- el código que crea la acción puede ser interno al thunk o externo, utilizándose otro creador de acciones previamente implementado.
+
+Esto permite crear acciones más complejas incluyendo en ellas efectos, como pueden ser las llamadas asíncronas a una API.
+
+```ts
+const rollDice =
+  (value: number, callback: () => Promise<number>) =>
+  async (dispatch: React.Dispatch<Action<number>>): Promise<void> => {
+    const data = await callback();
+    if (data === undefined) {
+      console.error('No se ha podido obtener el valor');
+      return;
+    }
+
+    const ac = (num: number): ActionWithPayload<number> => ({
+      type: ActionTypes.roll,
+      payload: num,
+    });
+    dispatch(ac(value * data));
+  };
+```
+
+Como hemos visto ya varias veces, un thunk puede abstraerse utilizando tipos genéticos, que permiten reutilizar el thunk para diferentes tipos de acciones y payloads. En este caso, el thunk se define como una función que recibe un valor y un callback, y devuelve otra función que recibe el dispatch y despacha la acción con el valor obtenido del callback.
+
+```tsx
+const updateThunkG =
+  <P, C>(value: P, callback: () => Promise<C>) =>
+  async (dispatch: React.Dispatch<Action<P>>): Promise<void> => {
+    const ac = (value: P): ActionWithPayload<P> => ({
+      type: ActionTypes.update,
+      payload: value,
+    });
+
+    // Ejemplo de función que podría llegar con callback
+    // const getData = (): Promise<number> => {
+    //     return new Promise((resolve) => {
+    //         setTimeout(() => {
+    //             resolve(value);
+    //         }, 1000);
+    //     });
+    // };
+
+    await callback();
+    dispatch(ac(value));
+  };
+```
+
+##### 🌐 Contextos
+
+Una última mejora, el uso de un contexto para tener el estado global, lo veremos más adelante.
+
+### 📝 Ejercicios sugeridos
 
 ✅ Ejercicio sugerido
 Implementa una función getUserInfo que acepte un id numérico o un objeto con email, y devuelva distintos tipos de información según el caso.
@@ -657,19 +1096,19 @@ Implementa una función getUserInfo que acepte un id numérico o un objeto con e
 Crea un contador con useState y un useEffect que actualice el título del documento. Asegúrate de tipar todo correctamente.
 
 ✅ Ejercicio sugerido
-Crea un hook useLocalStorage<T>() como el anterior.
+Crea un hook useLocalStorage\<T>() como el anterior.
 
 Usa useToggle() en un componente con un botón que alterna entre "Mostrar" y "Ocultar".
 
 ✅ Ejercicio sugerido
 Haz un componente que cargue datos de una API y muestre un "spinner" mientras espera.
 
-Pasa funciones onClick o onSubmit tipadas como props a subcomponentes.
+Pasa funciones onClick o onSubmit tipadas como props a sub-componentes.
 
 - Función format() con sobrecarga.
 - getUserInfo() que devuelva distintos tipos por entrada.
 - Contador con useState y useEffect.
 - Hook useToggle() y su uso en un botón.
-- Hook genérico useLocalStorage<T>() y uso práctico.
+- Hook genérico useLocalStorage\<T>() y uso práctico.
 - Componente que consume una API usando fetch con tipado correcto.
 - Prop de tipo función (onSubmit, onClick) con argumentos tipados.

@@ -85,7 +85,7 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
   - Tipado de la promesa
   - Gestión unificada de los errores
 - Estados y asincronía (promesas): componente User
-  - Estados: loading, success y error. Tipado
+  - Estados: loading, user y error. Tipado
   - Carga de datos en el componente.
   - Función asíncrona dentro del useEffect
 
@@ -95,3 +95,27 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
   - Abstracción del código del componente User
   - Tipado del hook
   - Uso del hook en el componente
+- Hook useId
+  - Generación de IDs únicos
+  - Uso del hook en los componentes Form, Focus, Input
+- Flux con useReducer
+  - Ejemplo: componente Contador
+  - Entidad, Acciones y reducer. Tipado
+  - Uso del hook useReducer en el componente. Funciones dispatch
+- Mejoras de Flux
+  - Nombres de las acciones
+  - Action creators
+
+## Día 7 (X 21/05)
+
+- Mejoras Flux (continuación)
+  - Reducers como diccionarios de funciones. Reducción de complejidad
+  - Incorporación de lógica asíncrona
+  - Thunks
+  - Test de los reducers
+- Modulo 3/4 Clases y Proyectos. Inyección de dependencias
+  <!-- - Introducción a las clases en TypeScript
+  - Clases y herencia
+  - Interfaces y clases abstractas
+  - Decoradores
+  - Inyección de dependencias. Ejemplo: contenedor de servicios -->
