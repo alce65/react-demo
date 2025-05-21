@@ -4,7 +4,8 @@ import './App.css';
 import { FormNC } from './components/7b.form.NC';
 import { ItemsWrapper } from './components/11.items';
 import { FormFocus } from './components/12.focus';
-import { UserComponent } from './components/14.user';
+import { UserComponent } from './components/15.user';
+import { CounterComponent } from './flux.v1/components/counter.component';
 //import { Initial } from "./components/initial";
 
 const App = (): JSX.Element => {
@@ -16,6 +17,7 @@ const App = (): JSX.Element => {
       // <Initial />; */}
       <ItemsWrapper />;
       <FormFocus />;
+      <CounterComponent />;
     </>
   );
 };
