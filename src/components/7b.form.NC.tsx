@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { getData } from './7b';
 
 export type User = {
@@ -54,6 +55,9 @@ export const FormNC: React.FC = () => {
     console.log('User data:', data);
   };
 
+  const isOkId = useId();
+  const courseID = useId();
+
   return (
     <form onSubmit={handleSubmit}>
       <h2>Formulario no controlada</h2>
@@ -94,11 +98,11 @@ export const FormNC: React.FC = () => {
       <div className="group-control">
         <input
           type="checkbox"
-          id="is-ok"
+          id={isOkId}
           name="isOkConditions"
           defaultChecked={initialUser.isOkConditions}
         />
-        <label htmlFor="is-ok">Acepto las condiciones...</label>
+        <label htmlFor={isOkId}>Acepto las condiciones...</label>
       </div>
 
       <fieldset name="turn">
@@ -111,8 +115,8 @@ export const FormNC: React.FC = () => {
         <label htmlFor="turno-n">Noche</label>
       </fieldset>
 
-      <label htmlFor="course">Elige un curso</label>
-      <select name="course" id="course" defaultValue={initialUser.course}>
+      <label htmlFor={courseID}>Elige un curso</label>
+      <select name="course" id={courseID} defaultValue={initialUser.course}>
         <option value=""></option>
         <option value="A">Angular</option>
         <option value="R">React</option>

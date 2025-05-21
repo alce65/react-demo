@@ -1,10 +1,11 @@
-import { useRef } from "react";
+import { useId, useRef } from 'react';
 
 export const FormFocus: React.FC = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
 
-
-    const inputRef = useRef<HTMLInputElement>(null)
-
+  const nameId = useId();
+  const emailId = useId();
+  const passwordId = useId();
 
   //   const focusInput = (ev: React.MouseEvent<HTMLButtonElement>): void => {
   //     const form = ev.currentTarget.parentElement as HTMLFormElement;
@@ -23,21 +24,21 @@ export const FormFocus: React.FC = () => {
   return (
     <form>
       <div>
-        <label htmlFor="name">Name</label>
+        <label htmlFor={nameId}>Name</label>
         <input
           ref={inputRef} // Referencia al input
           type="text"
-          id="name"
+          id={nameId}
           name="name"
         />
       </div>
       <div>
-        <label htmlFor="email">Email</label>
-        <input type="email" id="email" name="email" />
+        <label htmlFor={emailId}>Email</label>
+        <input type="email" id={emailId} name="email" />
       </div>
       <div>
-        <label htmlFor="password">Password</label>
-        <input type="password" id="password" name="password" />
+        <label htmlFor={passwordId}>Password</label>
+        <input type="password" id={passwordId} name="password" />
       </div>
       <button type="submit">Submit</button>
       <button type="button" onClick={focusInput}>
