@@ -6,6 +6,7 @@ import { ItemsWrapper } from './components/11.items';
 import { FormFocus } from './components/12.focus';
 import { UserComponent } from './components/15.user';
 import { CounterComponent } from './flux.v1/components/counter.component';
+import { SampleComponent } from './oop/Components/sample';
 //import { Initial } from "./components/initial";
 
 const App = (): JSX.Element => {
@@ -18,6 +19,8 @@ const App = (): JSX.Element => {
       <ItemsWrapper />;
       <FormFocus />;
       <CounterComponent />;
+      <h3>Componente basado en clases</h3>
+      <SampleComponent name="Sample" />;
     </>
   );
 };
