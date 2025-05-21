@@ -3,6 +3,7 @@ export const ActionTypes = {
   reset: 'counter@reset',
   stop: 'counter@stop',
   update: 'counter@update',
+  rolDice: 'counter@rolDice',
 } as const;
 
 export type ActionWithoutPayload = {
@@ -13,7 +14,9 @@ export type ActionWithoutPayload = {
 };
 
 export type ActionPayloadG<T> = {
-  type: typeof ActionTypes.update;
+  type: 
+  | typeof ActionTypes.update
+  | typeof ActionTypes.rolDice;
   payload:T;
 };
 
