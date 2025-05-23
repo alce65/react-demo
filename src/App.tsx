@@ -7,11 +7,13 @@ import { FormFocus } from './components/12.focus';
 import { UserComponent } from './components/15.user';
 import { CounterComponent } from './flux.v1/components/counter.component';
 import { SampleComponent } from './oop/Components/sample';
+import { Consumer } from './components/17.consumer';
 //import { Initial } from "./components/initial";
 
 const App = (): JSX.Element => {
   return (
     <>
+      <Consumer />;
       <UserComponent />;
       <FormNC />;
       {/* // <Form />; 
