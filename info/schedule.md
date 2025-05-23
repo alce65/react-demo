@@ -113,9 +113,27 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
   - Incorporación de lógica asíncrona
   - Thunks
   - Test de los reducers
-- Modulo 3/4 Clases y Proyectos. Inyección de dependencias
-  <!-- - Introducción a las clases en TypeScript
+- Modulo 3 Clases. Inyección de dependencias
+  - Introducción a las clases en TypeScript
   - Clases y herencia
   - Interfaces y clases abstractas
-  - Decoradores
-  - Inyección de dependencias. Ejemplo: contenedor de servicios -->
+- Componentes basados en clases
+  - Props y State. Tipado
+  - Jerarquía de componentes
+  - Ciclo de vida y Hooks en componentes de clase
+
+## Día 8 (J 22/05)
+
+- Servicios basados en clases
+  - Ejemplo: Repositorios. Uso de interfaces
+  - Inyección / inversión de dependencias. Repositorios en el custom Hook
+- Context API
+  - Contexto y Provider
+  - Contexto como inyector de dependencias
+  - Contexto como estado global
+  - Custom Hooks en el contexto
+- Test del reducer
+
+## Día 9 (L 26/05)
+
+<!-- - Modulo 4. Proyectos -->
