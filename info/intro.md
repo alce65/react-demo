@@ -64,23 +64,23 @@ DURACIÓN 40 horas
   - 📘 Uso de tipos inferidos y explícitos en funciones React.
   - 📘 Tipado de eventos de formulario y DOM en React (onClick, onChange).
 - MÓDULO 2: FUNCIONES Y HOOKS CON TYPESCRIPT EN REACT
-  - Sobrecarga de funciones y tipos de retorno en funciones de React.
-  - Tipado de useState, useEffect y otros hooks básicos.
-  - Introducción a hooks personalizados tipados para manejo de lógica reutilizable.
-  - Uso de callbacks y promesas en componentes React, con tipado correcto.
+  - 📘 Sobrecarga de funciones y tipos de retorno en funciones de React.
+  - 📘 Tipado de useState, useEffect y otros hooks básicos.
+  - 📘 Introducción a hooks personalizados tipados para manejo de lógica reutilizable.
+  - 📘 Uso de callbacks y promesas en componentes React, con tipado correcto.
 - MÓDULO 3: PROGRAMACIÓN ORIENTADA A COMPONENTES EN REACT
-  - Clases y componentes basados en clases con TypeScript.
-  - Tipado avanzado de props y estado en componentes de clase.
-  - Uso de readonly, abstract y modificadores de acceso en componentes de clase.
+  - 📘 Clases y componentes basados en clases con TypeScript.
+    - Tipado avanzado de props y estado en componentes de clase.
+    - Uso de readonly, abstract y modificadores de acceso en componentes de clase.
 - MÓDULO 4: ESTRUCTURACIÓN Y MÓDULOS EN PROYECTOS REACT
-  - Estructura modular en proyectos React: configuración de módulos y namespaces.
-  - Importación y exportación de componentes tipados.
-  - Configuración avanzada de tsconfig.json en proyectos React.
+  - 📘 Estructura modular en proyectos React: configuración de módulos y namespaces.
+  - 📘 Importación y exportación de componentes tipados.
+  - 📘 Configuración avanzada de tsconfig.json en proyectos React.
   - Uso de namespaces para organizar aplicaciones grandes de React.
 - MÓDULO 5: INTEGRACIÓN DE LIBRERÍAS Y HERRAMIENTAS EN REACT CON TYPESCRIPT
-  - Tipado e integración de librerías comunes en React (React Router, Redux, etc.).
-  - Configuración de definiciones de tipos con @types.
-  - Optimización de proyectos React-TS con herramientas de construcción como Webpack y Gulp.
+  - 📘 Tipado e integración de librerías comunes en React (React Router, Redux, etc.).
+  - 📘 Configuración de definiciones de tipos con @types.
+  - 📘 Optimización de proyectos React-TS con herramientas de construcción como Webpack y Gulp.
 - MÓDULO 6: BUENAS PRÁCTICAS EN REACT CON TYPESCRIPT
   - Principios básicos de SOLID en proyectos React-TS.
   - Uso eficiente de patrones de diseño en React (patrones de composición).
@@ -191,19 +191,19 @@ Update `tsconfig.app.json` y `tsconfig.node.json` to add `vitest` to the `types`
 Update `vite.config.ts` to add the `vitest` property:
 
 ```ts
-import { defineConfig } from "vitest/config";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    environment: "jsdom",
-    include: ["**/*.test.ts", "**/*.test.tsx"],
+    environment: 'jsdom',
+    include: ['**/*.test.ts', '**/*.test.tsx'],
     coverage: {
-      include: ["src/**/*.ts"],
-      exclude: ["src/index.ts", "src/**/types/*.ts"],
+      include: ['src/**/*.ts'],
+      exclude: ['src/index.ts', 'src/**/types/*.ts'],
     },
   },
 });
@@ -224,13 +224,13 @@ Update `package.json` to add the `test` script:
 `testConfig.ts` to src folder:
 
 ```ts
-import "@testing-library/jest-dom/vitest";
+import '@testing-library/jest-dom/vitest';
 ```
 
 Update `vitest.config.ts` to add the `setupFiles` property:
 
 ```ts
-setupFiles: ["./testConfig.ts"];
+setupFiles: ['./testConfig.ts'];
 ```
 
 #### Herramientas de edición de código
