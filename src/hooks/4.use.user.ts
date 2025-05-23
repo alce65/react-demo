@@ -1,5 +1,7 @@
 import { useCallback, useState } from 'react';
-import { getUser, type User } from '../services/repo.fn.';
+import type { User } from '../types/user';
+import type { UserRepo } from '../services/repo';
+
 
 type UserState = {
   user: User | null;
@@ -7,11 +9,14 @@ type UserState = {
   error: Error | null;
 };
 
-type UseUserHook = () => UserState & {
+type UseUserHook = ({id, repo}: {id?: User['id'], repo: UserRepo}) => UserState & {
   load: () => Promise<void>;
 };
 
-export const useUser: UseUserHook = () => {
+// Opción instanciar el repositorio en el módulo
+// const repo = new ApiUserRepo()
+
+export const useUser: UseUserHook = ({id='1', repo}) => {
   const [user, setUser] = useState<UserState['user']>(null);
   const [loading, setLoading] = useState<UserState['loading']>(false);
   const [error, setError] = useState<UserState['error']>(null);
@@ -24,7 +29,7 @@ export const useUser: UseUserHook = () => {
     //   loading: true,
     // }));
     try {
-      const user = await getUser();
+      const user = await repo.getUserById(id);
       setUser(user);
       // setState((prevState) => ({
       //   ...prevState,

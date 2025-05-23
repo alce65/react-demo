@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { getUser, type User } from '../services/repo';
+import { getUser, type User } from '../services/repo.fn.';
 
 // type State = {
 //   user: User | null;
 //   loading: boolean;
 //   error: Error | null;
 // };
-
 
 // Ejemplo de un componente que obtiene datos de un servicio y los muestra
 // con la lógica de carga y error en el componente
