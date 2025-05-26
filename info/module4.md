@@ -10,7 +10,7 @@ module: 4
     - [🧠 Módulos ESM](#-módulos-esm)
     - [Importaciones y Vite](#importaciones-y-vite)
     - [Acceso a ficheros desde HTML. La carpeta public](#acceso-a-ficheros-desde-html-la-carpeta-public)
-      - [Novedades en React 19.](#novedades-en-react-19)
+      - [Novedades en React 19](#novedades-en-react-19)
   - [📘 Configuración avanzada de tsconfig.json](#-configuración-avanzada-de-tsconfigjson)
     - [Alias de importación](#alias-de-importación)
   - [📘 Uso de namespaces en aplicaciones grandes](#-uso-de-namespaces-en-aplicaciones-grandes)
@@ -130,7 +130,7 @@ La importación de los módulos depende de la forma de exportación:
 
 ```tsx
 // components/UserCard.tsx
-import { User } from "../types/User";
+import { type User } from "../types/User";
 import ButtonAnyName from "../components/Buttons";
 import { Button2, Button3 } from "../components/Buttons";
 ```
@@ -143,7 +143,7 @@ Al utilizar Vite, es importante tener en cuenta que este sistema de módulos ES 
 // components/Button.tsx
 import "./Button.css"; // Importación de CSS
 import icon from "./icon.png"; // Importación de imagen
-import { User } from "../types/User";
+import type { User } from "../types/User";
 ```
 
 Los ficheros .JSON también pueden ser importados como módulos, como si exportaran por defecto todo su contenido, lo que permite cargar datos de configuración o constantes directamente en el código.
@@ -206,7 +206,7 @@ const Header = () => (
 
 Como se ve en el ejemplo, desde HTML se pueden usar las etiquetas `<link>` y `<script>` para cargar recursos. En este caso, el favicon se carga desde la carpeta `public` y el script principal de la aplicación se carga desde la carpeta `src`.
 
-##### Novedades en React 19.
+##### Novedades en React 19
 
 En React19 se han introducido nuevas características que permiten un mejor manejo de los recursos y la carga de componentes. Desde los componentes se puede acceder a los elementos del head de la página, lo que permite cargar CSS o scripts de forma dinámica. De esta forma se evita la necesidad de dependencias como `react-helmet` o `react-helmet-async` para gestionar el head de la página.
 
