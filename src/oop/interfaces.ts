@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-interface IAnimal {
+export interface IAnimal {
   name: string;
   age: number;
   species: string;
@@ -7,13 +7,13 @@ interface IAnimal {
   eat(food: string): void;
 }
 
-type Animal = {
+export type Animal = {
   name: string;
   age: number;
   species: string;
 };
 
-const animal1: IAnimal = {
+export const animal1: IAnimal = {
   name: 'Lion',
   age: 5,
   species: 'Panthera leo',
@@ -23,7 +23,7 @@ const animal1: IAnimal = {
   },
 };
 
-const animal2: Animal = {
+export const animal2: Animal = {
   name: 'Lion',
   age: 5,
   species: 'Panthera leo',
