@@ -136,4 +136,38 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
 
 ## Día 9 (L 26/05)
 
-<!-- - Modulo 4. Proyectos -->
+- Modulo 4. Proyectos
+  . Estructura modular de un proyecto
+  - Estructura de carpetas (scaffolding) : feature oriented
+  - Módulos ESM. Import / Export. Import types
+  - Importaciones en Vite
+- Tsconfig
+  - Alias de importación: tsconfig y Vite
+- Namespaces en TypeScript y en ESM
+- Modulo 5. Integración de librerías
+  - Librerias sin tipos: @types
+  - Concepto de d.ts y creación en Vite
+- Optimización de proyectos: Monorepos multimódulo
+  - Ventajas de los monorepos
+  - Monorepos con NPM
+- Caso práctico: refactorización del curso como monorepo
+  - Incorporación de un proyecto nuevo
+  - Organización feature oriented
+  - Componentes iniciales del core:
+    - App
+    - Header
+    - Footer
+- Testing unitario
+  - Test de App: Mock de componentes
+  - Test de Header y Footer: testing/Library
+
+## Día 10 (M 27/05)
+
+- Review: Creación de de d.ts en Vite
+- Review Alias de importación: tsconfig y Vite
+- Caso práctico (continuación)
+<!-- - React Router
+  - Instalación y configuración
+  - Definición de rutas y navegación
+  - Tipado de rutas con TypeScript
+  - Ejemplo: Navegación entre páginas -->

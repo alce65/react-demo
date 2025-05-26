@@ -1,9 +1,8 @@
-+---
+---
 title: TYPESCRIPT INTERMEDIO = React con TypeScript
 module: 5
 ---
 
-- [module: 5](#module-5)
 - [🧩 MÓDULO 5: INTEGRACIÓN DE LIBRERÍAS Y HERRAMIENTAS EN REACT CON TYPESCRIPT](#-módulo-5-integración-de-librerías-y-herramientas-en-react-con-typescript)
   - [🎯 Objetivos del módulo](#-objetivos-del-módulo)
   - [📘 Tipado e integración de librerías comunes en React (React Router, Redux, etc.)](#-tipado-e-integración-de-librerías-comunes-en-react-react-router-redux-etc)
