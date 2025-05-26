@@ -1,16 +1,24 @@
 import { defineConfig } from 'vitest/config';
+import dts from 'vite-plugin-dts';
 import react from '@vitejs/plugin-react';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), dts({ tsconfigPath: './tsconfig.app.json' })],
+  resolve: {
+    alias: {
+      '@assets': '/src/assets',
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './src/setupTests.ts',
+    include: ['**/*.test.ts', '**/*.test.tsx'],
+    setupFiles: ['src/setupTests.ts'],
     coverage: {
       reporter: ['text', 'json', 'html'],
-      exclude: ['src/main.tsx', 'src/vite-env.d.ts', 'src/App.tsx'],
+      include: ['src/**/*.ts', 'src/**/*.tsx'],
+      exclude: ['src/main.tsx', 'src/**/types/*.ts', 'src/**/*.d.ts'],
     },
   },
 });
