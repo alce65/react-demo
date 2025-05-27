@@ -1,14 +1,13 @@
-import { Footer } from '../footer/footer';
-import { Header } from '../header/header';
+import { Layout } from '../layout/layout';
 import './App.css';
 
 export const App: React.FC = () => {
-  const title = 'React Routes';
+
   return (
     <>
-      <Header title={title}>Aquí ira el menu</Header>
-      <main> </main>
-      <Footer />
+      <Layout>
+        <p>Content</p>
+      </Layout>
     </>
   );
 };
