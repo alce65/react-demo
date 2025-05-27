@@ -15,5 +15,8 @@
   ],
   "prettier": {
     "singleQuote": true
+  },
+  "dependencies": {
+    "react-router": "^7.6.1"
   }
 }

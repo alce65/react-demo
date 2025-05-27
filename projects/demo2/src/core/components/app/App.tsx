@@ -1,13 +1,14 @@
-import { Layout } from '../layout/layout';
+// import { Layout } from '../layout/layout';
+import { AppRoutes } from '../../routes/routes';
 import './App.css';
 
 export const App: React.FC = () => {
-
   return (
     <>
-      <Layout>
-        <p>Content</p>
-      </Layout>
+      <AppRoutes />
+      {/* <Layout>
+
+      </Layout> */}
     </>
   );
 };
