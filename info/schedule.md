@@ -145,7 +145,7 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
   - Alias de importación: tsconfig y Vite
 - Namespaces en TypeScript y en ESM
 - Modulo 5. Integración de librerías
-  - Librerias sin tipos: @types
+  - Librerías sin tipos: @types
   - Concepto de d.ts y creación en Vite
 - Optimización de proyectos: Monorepos multimódulo
   - Ventajas de los monorepos

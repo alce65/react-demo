@@ -130,9 +130,9 @@ La importación de los módulos depende de la forma de exportación:
 
 ```tsx
 // components/UserCard.tsx
-import { type User } from "../types/User";
-import ButtonAnyName from "../components/Buttons";
-import { Button2, Button3 } from "../components/Buttons";
+import { type User } from '../types/User';
+import ButtonAnyName from '../components/Buttons';
+import { Button2, Button3 } from '../components/Buttons';
 ```
 
 #### Importaciones y Vite
@@ -141,9 +141,9 @@ Al utilizar Vite, es importante tener en cuenta que este sistema de módulos ES 
 
 ```tsx
 // components/Button.tsx
-import "./Button.css"; // Importación de CSS
-import icon from "./icon.png"; // Importación de imagen
-import type { User } from "../types/User";
+import './Button.css'; // Importación de CSS
+import icon from './icon.png'; // Importación de imagen
+import type { User } from '../types/User';
 ```
 
 Los ficheros .JSON también pueden ser importados como módulos, como si exportaran por defecto todo su contenido, lo que permite cargar datos de configuración o constantes directamente en el código.
@@ -158,7 +158,7 @@ Los ficheros .JSON también pueden ser importados como módulos, como si exporta
 
 ```tsx
 // components/Config.tsx
-import config from "../data/config.json";
+import config from '../data/config.json';
 const apiUrl = config.apiUrl;
 ```
 
@@ -179,7 +179,7 @@ src/
 
 ```tsx
 // components/Header.tsx
-import logo from "../assets/logo.png";
+import logo from '../assets/logo.png';
 const Header = () => (
   <header>
     <img src={logo} alt="Logo" />
@@ -214,14 +214,14 @@ La forma de hacerlo anteriormente, manualmente o usando Helmet era la siguiente:
 
 ```tsx
 // components/Head.tsx
-import { useEffect } from "react";
-import { Helmet } from "react-helmet";
+import { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 
 const Head = () => {
   useEffect(() => {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "https://example.com/styles.css";
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://example.com/styles.css';
     document.head.appendChild(link);
   }, []);
 
@@ -282,6 +282,54 @@ Algunas configuraciones útiles en React:
 
 - `baseUrl` y `paths` permiten alias de importación.
 
+Por ejemplo, para facilitar el acceso a componentes, hooks y tipos, se pueden definir alias como `@components`, `@hooks`, `@types`, etc.
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@hooks/*": ["hooks/*"],
+      "@types/*": ["types/*"]
+    }
+  }
+}
+```
+
+Al utilizar vite es necesario actualizar el archivo `vite.config.ts` para que reconozca estos alias:
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@components': 'src/components',
+      '@hooks': 'src/hooks',
+      '@types': 'src/types',
+    },
+  },
+});
+```
+
+Ya no es imprescindible utilizar path para definir los alias, pero es una buena práctica para evitar problemas de resolución de rutas.
+
+```ts
+"@components": path.resolve(__dirname, "src/components")
+```
+
+Con esta configuración, se pueden importar componentes, hooks y tipos de la siguiente manera:
+
+```tsx
+// components/UserCard.tsx
+import { User } from '@types/user';
+import { Button } from '@components/Button';
+```
+
 Las ventajas del uso de alias son:
 
 - Mejora la claridad de los imports.
@@ -310,7 +358,7 @@ export namespace UserModel {
 
 ```tsx
 // components/UserCard.tsx
-import { UserModel } from "../models/UserModel";
+import { UserModel } from '../models/UserModel';
 
 const UserCard = ({ user }: { user: UserModel.User }) => (
   <div>{UserModel.getDisplayName(user)}</div>
@@ -323,7 +371,7 @@ ESM, al margen de TS, tiene una forma de importación conocida como **namespace*
 
 ```tsx
 // components/UserCard.tsx
-import * as um from "../models/UserModel";
+import * as um from '../models/UserModel';
 const UserCard = ({ user }: { user: um.User }) => (
   <div>{um.getDisplayName(user)}</div>
 );
@@ -332,7 +380,7 @@ const UserCard = ({ user }: { user: um.User }) => (
 Un caso frecuente de su uso es cuando se importan todos los acctions creators de Flux, que suelen tener nombres similares. En este caso, se puede importar todo el módulo bajo un mismo espacio de nombres y acceder a cada acción con `ac.actionName`.
 
 ```tsx
-import * as ac from "./actions";
+import * as ac from './actions';
 ```
 
 ### 📝 Ejercicios sugeridos
