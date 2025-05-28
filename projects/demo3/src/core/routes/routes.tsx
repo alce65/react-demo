@@ -1,29 +1,42 @@
-import { App } from '@core/components/app/App';
+import {lazy} from 'react';
 import { type RouteObject } from 'react-router';
-import {} from 'react-router';
+import { App } from '@core/components/app/App';
 import { Layout } from '@core/components/layout/layout';
-import Home from '@home/home';
 
 // const Home = React.lazy(() => import('@home/home'));
-// const About = React.lazy(() => import('@about/about'));
-// const Products = React.lazy(() => import('@products/products'));
-// const ProductDetail = React.lazy(
-//   () => import('@products/details/product-detail'),
-// );
+const About = lazy(() => import('@about/about'));
+const Products = lazy(() => import('@products/products'));
+const ProductDetail = lazy(
+  () => import('@products/details/product-detail'),
+);
 
 export const routes: RouteObject[] = [
   {
-    Component: Layout,
+    Component: App,
     children: [
       {
-        Component: App,
         path: '/',
+        Component: Layout,
         children: [
-            {
-                index: true,
-                Component: Home
-            }
-        ]
+          {
+            index: true,
+            lazy: {
+                Component: async () => (await import('@home/home')).Home,
+            },
+          },
+          {
+             path:"/products",
+             Component: Products
+          },
+          {
+            path:"/product/:id",
+            Component: ProductDetail
+          },
+          {
+            path:"/about",
+            Component: About
+          }
+        ],
       },
     ],
   },

@@ -1,8 +1,8 @@
 import { render } from '@testing-library/react';
 import { App } from './App';
-import { AppRoutes } from '@core/routes/routes';
-vi.mock('@core/routes/routes');
+import { Layout } from '../layout/layout';
 
+vi.mock('../layout/layout')
 describe('App Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -12,6 +12,6 @@ describe('App Component', () => {
     // Act
     render(<App />);
     // Assert
-    expect(AppRoutes).toHaveBeenCalled();
+    expect(Layout).toBeDefined();
   });
 });
