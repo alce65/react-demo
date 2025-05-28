@@ -166,8 +166,26 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
 - Review: Creación de de d.ts en Vite
 - Review Alias de importación: tsconfig y Vite
 - Caso práctico (continuación)
-<!-- - React Router
-  - Instalación y configuración
-  - Definición de rutas y navegación
-  - Tipado de rutas con TypeScript
-  - Ejemplo: Navegación entre páginas -->
+- Layout y context. DI del título
+
+- React Router
+  - Instalación. Estrategias
+  - Modo declarativo. Router (Provider)
+    - Definición de rutas: componentes Routes y Route
+    - Navegación mediante urls en el navegador
+    - Organización de las rutas: componente AppRouter
+  - Menu: Link y NavLink. Iteración al crearlo
+  - Creación de las páginas. Navegación entre ellas
+  - Rutas dinámicas. Página de detalle
+    - Parámetros de ruta
+    - Navegación programática
+
+## Día 11 (X 28/05)
+
+- Configuración de path alias
+- Revisión de los tests
+- React Router (continuación)
+  - Rutas lazy. Suspense
+  - Error boundaries
+  - Test de rutas lazy
+- Modo datos de React Router
