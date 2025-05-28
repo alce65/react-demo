@@ -1,6 +1,6 @@
 import reactLogo from '@assets/react.svg';
 import './header.css';
-import { AppContext } from '../../../context/context';
+import { AppContext } from '@context/context';
 import { use } from 'react';
 
 type Props = {

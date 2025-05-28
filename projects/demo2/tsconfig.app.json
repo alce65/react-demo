@@ -9,7 +9,12 @@
     "types": ["vitest/globals"],
     "baseUrl": ".",
     "paths": {
-      "@assets/*": ["src/assets/*"]
+      "@assets/*": ["src/assets/*"],
+      "@context/*": ["src/context/*"],
+      "@core/*": ["src/core/*"],
+      "@home/*": ["src/features/home/*"],
+      "@about/*": ["src/features/about/*"],
+      "@products/*": ["src/features/products/*"],
     },
 
     /* Bundler mode */

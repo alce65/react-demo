@@ -1,4 +1,4 @@
-import { AppContext } from './context';
+import { AppContext } from '@context/context';
 
 type Props = {
   children: React.ReactNode;
