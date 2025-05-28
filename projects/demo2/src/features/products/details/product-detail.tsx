@@ -5,9 +5,10 @@ type Params = { id: string };
 export const ProductDetail: React.FC = () => {
   const { id } = useParams<Params>();
   const navigate = useNavigate();
-
+  
   const goTo = (): void => {
-    navigate('/');
+      
+navigate('/');
   };
 
   return (
@@ -19,3 +20,5 @@ export const ProductDetail: React.FC = () => {
     </div>
   );
 };
+
+export default ProductDetail;
