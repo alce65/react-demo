@@ -1,26 +1,27 @@
-import { AppContext } from '@context/context';
-import type { Product, UUID } from '@products/types/product';
-import { use, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import type { Product } from '@products/types/product';
+import { useState } from 'react';
+import { useLoaderData, useNavigate } from 'react-router';
 
-type Params = { id: UUID };
+// type Params = { id: UUID };
 
 export const ProductDetail: React.FC = () => {
-  const { id } = useParams<Params>();
+  const loadedProduct =  useLoaderData<Product>()
+  //const { id } = useParams<Params>();
   const navigate = useNavigate();
-  const [product, setProduct] = useState<Product | null>(null);
-  const { productsRepo: repo } = use(AppContext);
+  const [product ] = useState<Product>(loadedProduct);
+  
+  //const { productsRepo: repo } = use(AppContext);
 
-  useEffect(() => {
-    repo
-      .getProductById(id as UUID)
-      .then((data) => {
-        setProduct(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching product:', error);
-      });
-  }, [id, repo]);
+//   useEffect(() => {
+//     repo
+//       .getProductById(id as UUID)
+//       .then((data) => {
+//         setProduct(data);
+//       })
+//       .catch((error) => {
+//         console.error('Error fetching product:', error);
+//       });
+//   }, [id, repo]);
 
   const goTo = (): void => {
     navigate('/');
@@ -28,7 +29,7 @@ export const ProductDetail: React.FC = () => {
 
   return (
     <div>
-      <h1>Product Detail: {id?.split('-')[0] as string}</h1>
+      <h1>Product Detail: {product.id?.split('-')[0] as string}</h1>
       {product && (
         <div>
           <h2>{product.name}</h2>

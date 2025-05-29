@@ -1,22 +1,27 @@
-import { Link } from 'react-router';
+import { Link, useLoaderData } from 'react-router';
 import './products.css';
 import type { Product } from './types/product';
-
 import { use, useEffect, useState } from 'react';
 import { AppContext } from '@context/context';
 
 export const Products: React.FC = () => {
-  
-  const [products, setProducts] = useState<Product[]>([]);
-  const {productsRepo: repo} = use(AppContext)
+  const loadedProducts = useLoaderData<Product[]>();
+
+  const [products, setProducts ] = useState<Product[]>(loadedProducts || []);
+  const { productsRepo: repo } = use(AppContext);
 
   useEffect(() => {
-    repo.getProducts().then((data) => {
+    if (products.length > 0) return
+    console.log(('Products loaded from useEffect'));
+    repo
+      .getProducts()
+      .then((data) => {
         setProducts(data);
-        }).catch((error) => {
+      })
+      .catch((error) => {
         console.error('Error fetching products:', error);
-    });
-  }, [repo]);
+      });
+  }, [repo, products.length]);
 
   return (
     <section className="products">

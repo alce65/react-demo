@@ -1,95 +1,68 @@
-import {lazy} from 'react';
+import { lazy } from 'react';
 import { type RouteObject } from 'react-router';
 import { App } from '@core/components/app/App';
 import { Layout } from '@core/components/layout/layout';
+import type { Product, UUID } from '@products/types/product';
+import type { ProductRepository } from '@products/services/product.repo';
 
-// const Home = React.lazy(() => import('@home/home'));
-const About = lazy(() => import('@about/about'));
-const Products = lazy(() => import('@products/products'));
-const ProductDetail = lazy(
-  () => import('@products/details/product-detail'),
-);
+export const createRoutes = (
+  productsRepo: ProductRepository,
+): RouteObject[] => {
+  // const Home = React.lazy(() => import('@home/home'));
+  const About = lazy(() => import('@about/about'));
+  const Products = lazy(() => import('@products/products'));
+  const ProductDetail = lazy(() => import('@products/details/product-detail'));
 
-export const routes: RouteObject[] = [
-  {
-    Component: App,
-    children: [
-      {
-        path: '/',
-        Component: Layout,
-        children: [
-          {
-            index: true,
-            lazy: {
+  // Caso general
+  type Params = { params: Record<string, unknown> };
+
+  // type PParams = { params: {id: UUID} };
+
+  const productsLoader = async (): Promise<Product[]> => {
+    console.log('Products loaded from Loader');
+    const data = await productsRepo.getProducts();
+    return data;
+  };
+
+  const productsDetailLoader = async ({ params: {id} }: Params): Promise<Product> => {
+    console.log('Product Detail loaded from Loader');
+    const data = await productsRepo.getProductById(id as UUID);
+    return data;
+  };
+
+  const routes: RouteObject[] = [
+    {
+      Component: App,
+      children: [
+        {
+          path: '/',
+          Component: Layout,
+          children: [
+            {
+              index: true,
+              lazy: {
                 Component: async () => (await import('@home/home')).Home,
+              },
             },
-          },
-          {
-             path:"/products",
-             Component: Products
-          },
-          {
-            path:"/product/:id",
-            Component: ProductDetail
-          },
-          {
-            path:"/about",
-            Component: About
-          }
-        ],
-      },
-    ],
-  },
-];
+            {
+              path: '/products',
+              Component: Products,
+              loader: productsLoader,
+            },
+            {
+              path: '/product/:id',
+              Component: ProductDetail,
+              loader: productsDetailLoader,
+            },
+            {
+              path: '/about',
+              Component: About,
+            },
+          ],
+        },
+      ],
+    },
+  ];
 
-// export const AppRoutes: React.FC = () => {
-//   return (
-//     <>
-//       <Routes>
-//         <Route path="/" element={<Layout />}>
-//           <Route
-//             path="/"
-//             element={
-//               <React.Suspense fallback={<div>Loading...</div>}>
-//                 <Home />
-//               </React.Suspense>
-//             }
-//           />
-//           <Route
-//             path="/home"
-//             element={
-//               <React.Suspense fallback={<div>Loading...</div>}>
-//                 <Home />
-//               </React.Suspense>
-//             }
-//           />
-//           <Route
-//             path="/products"
-//             element={
-//               <React.Suspense fallback={<div>Loading...</div>}>
-//                 <Products />
-//               </React.Suspense>
-//             }
-//           />
-//           <Route
-//             path="/product/:id"
-//             element={
-//               <React.Suspense fallback={<div>Loading...</div>}>
-//                 <ProductDetail />
-//               </React.Suspense>
-//             }
-//           />
-//           <Route
-//             path="/about"
-//             element={
-//               <React.Suspense fallback={<div>Loading...</div>}>
-//                 <About />
-//               </React.Suspense>
-//             }
-//           />
-//           <Route path="*" element={<>Not Found</>} />
-//         </Route>
-//       </Routes>
-//     </>
-//   );
-// };
+  return routes;
+};
