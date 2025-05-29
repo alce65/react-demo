@@ -7,7 +7,7 @@ describe('Header component', () => {
     const title = 'Demo 06';
     const children = <div>Child Component</div>;
     render(
-      <AppContext value={{ title }}>
+      <AppContext value={{ title } as AppContext}>
         <Header>{children}</Header>
       </AppContext>,
     );

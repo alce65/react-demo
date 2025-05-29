@@ -1,15 +1,25 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router';
 import { act, render, screen } from '@testing-library/react';
 import { ProductDetail } from './product-detail';
+import type { ProductRepository } from '@products/services/product.repo';
+import { AppContext } from '@context/context';
 
 describe('Products component', () => {
+  const repoMock: ProductRepository = {
+    getProductById: vi.fn().mockResolvedValue({ id: '1', name: 'Product 1' }),
+  } as unknown as ProductRepository;
+
+  const context = { productsRepo: repoMock } as AppContext;
+
   beforeEach(() => {
     render(
-      <Router initialEntries={['/productsDetail/123']}>
-        <Routes>
-          <Route path="/productsDetail/:id" element={<ProductDetail />} />
-        </Routes>
-      </Router>,
+      <AppContext value={context}>
+        <Router initialEntries={['/productsDetail/123']}>
+          <Routes>
+            <Route path="/productsDetail/:id" element={<ProductDetail />} />
+          </Routes>
+        </Router>
+      </AppContext>,
     );
   });
 
