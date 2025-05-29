@@ -189,3 +189,23 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
   - Error boundaries
   - Test de rutas lazy
 - Modo datos de React Router
+  - Clon del proyecto anterior
+  - Estrategia de datos. Rutas y router
+  - Lazy loading
+- Feature products
+  - Entidad y DTO. Mock de productos
+  - Repositorio de productos
+  - Inyección desde main y el contexto
+  - Página de productos
+
+## Día 12 (J 29/05)
+
+<!-- - Feature products (continuación)
+  - Componente ProductDetail
+  - Test de los componentes
+- Redux
+  - Introducción a Redux
+  - Instalación de Redux Toolkit
+  - Store y Provider
+  - Reducers y acciones
+  - Uso de useSelector y useDispatch -->
