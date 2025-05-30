@@ -186,7 +186,7 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
 - Revisión de los tests
 - React Router (continuación)
   - Rutas lazy. Suspense
-  - Error boundaries
+  - Error boundaries. Class componentes
   - Test de rutas lazy
 - Modo datos de React Router
   - Clon del proyecto anterior
@@ -200,12 +200,15 @@ DURACIÓN 39 horas / 3 semanas (L-J) / 12 días
 
 ## Día 12 (J 29/05)
 
-<!-- - Feature products (continuación)
+- Feature products (continuación)
   - Componente ProductDetail
   - Test de los componentes
+  - Loaders en las rutas
+  - Factory de las rutas con DI
 - Redux
   - Introducción a Redux
   - Instalación de Redux Toolkit
   - Store y Provider
-  - Reducers y acciones
-  - Uso de useSelector y useDispatch -->
+  - Nueva feature Cart
+    - Reducers y acciones
+    - Uso de useSelector y useDispatch
