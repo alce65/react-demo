@@ -10,6 +10,7 @@ export const Menu: React.FC = () => {
   const menuOptions: MenuOption[] = [
     { label: 'Home', path: '/' },
     { label: 'Products', path: '/products' },
+    { label: 'Cart', path: '/cart' },
     { label: 'About', path: '/about' },
   ];
   return (

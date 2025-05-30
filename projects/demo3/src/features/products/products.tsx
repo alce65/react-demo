@@ -2,13 +2,24 @@ import { Link, useLoaderData } from 'react-router';
 import './products.css';
 import type { Product } from './types/product';
 import { use, useEffect, useState } from 'react';
+
 import { AppContext } from '@context/context';
+import { useDispatch } from 'react-redux';
+import {actions} from '@products/redux/cart.slice';
 
 export const Products: React.FC = () => {
   const loadedProducts = useLoaderData<Product[]>();
 
   const [products, setProducts ] = useState<Product[]>(loadedProducts || []);
   const { productsRepo: repo } = use(AppContext);
+  const dispatch = useDispatch()
+
+
+  const handeClick = (product: Product) => {
+    console.log('Product added to cart:', product);
+    dispatch(actions.addProduct(product));
+    
+  };
 
   useEffect(() => {
     if (products.length > 0) return
@@ -30,6 +41,7 @@ export const Products: React.FC = () => {
         {products.map((item) => (
           <li className="product-item" key={item.id}>
             <Link to={'/product/' + item.id}>{item.name}</Link>
+            <button onClick={() => handeClick(item)}>Add to cart</button>
           </li>
         ))}
       </ul>

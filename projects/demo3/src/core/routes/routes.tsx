@@ -4,6 +4,7 @@ import { App } from '@core/components/app/App';
 import { Layout } from '@core/components/layout/layout';
 import type { Product, UUID } from '@products/types/product';
 import type { ProductRepository } from '@products/services/product.repo';
+import { Cart } from '@products/cart/cart';
 
 export const createRoutes = (
   productsRepo: ProductRepository,
@@ -53,6 +54,10 @@ export const createRoutes = (
               path: '/product/:id',
               Component: ProductDetail,
               loader: productsDetailLoader,
+            },
+            {
+                path: '/cart',
+                Component: Cart,
             },
             {
               path: '/about',
